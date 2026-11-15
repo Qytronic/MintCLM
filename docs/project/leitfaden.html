@@ -1,0 +1,1445 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>MintCLM – Dein Projektleitfaden</title><style>
+:root{color-scheme:light; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; color:#202b2b;background:#f4f8f6}*{box-sizing:border-box}body{margin:0;font-size:17px;line-height:1.7}header{background:#125c50;color:white;padding:1rem max(1.25rem,calc((100vw - 1050px)/2));}header strong{font-size:1.15rem}header p{margin:.1rem 0 0;color:#d8eee7}main{max-width:1050px;margin:2rem auto 4rem;padding:2rem 3rem;background:#fff;border:1px solid #e0ece6;border-radius:14px;box-shadow:0 8px 30px #183b2910}h1,h2,h3{line-height:1.25;color:#16493e;scroll-margin-top:1rem}h1{font-size:2.2rem}h2{font-size:1.65rem;margin-top:3rem;padding-bottom:.45rem;border-bottom:2px solid #cbe6d9}h3{font-size:1.2rem;margin-top:2rem}p,li{max-width:85ch}a{color:#086b5c;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#003e35}code{background:#edf4f0;border-radius:4px;padding:.1em .3em;font-family:Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}pre{overflow:auto;background:#162c29;color:#edf9f2;border-radius:9px;padding:1.15rem;line-height:1.5}pre code{background:none;color:inherit;padding:0;overflow-wrap:normal;white-space:pre}table{border-collapse:collapse;width:100%;min-width:560px;font-size:.94rem}th,td{border:1px solid #dce8e1;padding:.65rem .8rem;text-align:left;vertical-align:top}th{background:#e9f5ee}tr:nth-child(even){background:#f8fbf9}.table-wrap{overflow-x:auto;margin:1.2rem 0}li{margin:.35rem 0}blockquote{border-left:4px solid #5cb498;margin-left:0;padding-left:1rem;color:#425950}nav{margin:0 0 1rem;font-size:.95rem}nav a{margin-right:1.2rem}@media(max-width:650px){body{font-size:16px}main{margin:0;padding:1.3rem;border:0;border-radius:0}h1{font-size:1.8rem}header{padding:1rem 1.3rem}}@media print{body{background:white;font-size:10pt}header{background:white;color:#16493e}header p{color:#333}main{border:0;box-shadow:none;margin:0;max-width:none;padding:0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eee;color:#111}a{color:#174c3d}h2,h3{break-after:avoid}tr,pre{break-inside:avoid}nav{display:none}}
+</style></head><body><header><strong>MintCLM</strong><p>Dein persönlicher Projektleitfaden</p></header><main><nav><a href="#ubersicht-uber-deinen-weg">Zur Übersicht</a><a href="#dein-konkreter-anfang">Zur ersten Arbeitssitzung</a><a href="#dein-mint-projekt-dokumentieren">Zum Projektjournal</a></nav><h1 id="mintclm-schritt-fur-schritt-entwickeln-und-verstehen">MintCLM Schritt für Schritt entwickeln und verstehen</h1>
+<p><strong>Aktualisierte Projektplanung:</strong> Dein erstes Modell heisst <strong>MintCLM-1:1M</strong>. Später sind 100M oder 300M und langfristig 4B mögliche Ziele. Die <a href="modellreihe.html">Modellreihe und Hardwareplanung</a> ergänzt diesen Lernleitfaden. Alle Modelle sind bisher geplant, nicht fertig implementiert.</p>
+<p>Dein Ziel ist ein eigenes Sprachmodell, dessen Bestandteile du erklären, prüfen und verändern kannst. Du beginnst mit einem kleinen Modell und entscheidest anhand deiner Ergebnisse über die nächsten Schritte. Ob und wie deine Schule dieses Ergebnis für MINT Plus F anerkennt, klärst du mit dem MINT-Team.</p>
+<p><strong>Dein erstes Etappenziel:</strong> Ein kurzer Text wird zu Zahlen, ein kleines Modell lernt daraus, und du kannst neue Zeichen erzeugen sowie den Lernfortschritt zeigen. BPE, grosse Datenmengen und zusätzliche Hardware kommen danach.</p>
+<p>Lies heute die Übersicht, die Grundlagen und die Einrichtung. Die übrigen Kapitel sind dein Nachschlagewerk. Du musst nicht alles verstehen, bevor du anfängst. Die erste Arbeitssitzung steht am Ende.</p>
+<p>Stand der Installationshinweise und der lokalen Bestandsaufnahme: <strong>14. November 2026</strong>. Die Codebeispiele sind kleine Lernbausteine. Wo ein Beispiel spätere Funktionen wie <code>model(...)</code> voraussetzt, steht das ausdrücklich dabei. Sie bilden noch kein fertiges Trainingsprogramm.</p>
+<h2 id="ubersicht-uber-deinen-weg">Übersicht über deinen Weg</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Reihenfolge</th>
+<th>Mindestziel</th>
+<th>Später möglich</th>
+<th>Warum dieser Schritt jetzt kommt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 Einrichtung</td>
+<td>Python, eigene Umgebung, erste Rechnung</td>
+<td>GPU und weitere Geräte</td>
+<td>Du brauchst eine verlässliche Arbeitsumgebung.</td>
+</tr>
+<tr>
+<td>1 Grundlagen</td>
+<td>Arrays, Tensoren, Gradienten verstehen</td>
+<td>Vertiefte Mathematik</td>
+<td>Damit kannst du die späteren Rechenschritte erklären.</td>
+</tr>
+<tr>
+<td>2 Textdaten</td>
+<td>Kleine Texte untersuchen und getrennt aufteilen</td>
+<td>Grösserer eigener Korpus</td>
+<td>Daten bestimmen, was überhaupt lernbar ist.</td>
+</tr>
+<tr>
+<td>3 Einfache Tokens</td>
+<td>Text in Zeichen-IDs oder Bytes umwandeln und zurück</td>
+<td>Eigener BPE-Tokenizer</td>
+<td>Das Modell verarbeitet Zahlen.</td>
+</tr>
+<tr>
+<td>4 Trainingsbeispiele</td>
+<td>Eingabe und nächstes Token korrekt verschieben</td>
+<td>Datensätze effizient laden</td>
+<td>Ein falsches Lernziel macht jedes Training wertlos.</td>
+</tr>
+<tr>
+<td>5 Erstes Sprachmodell</td>
+<td>Bigram-Modell als überschaubare Vorstufe</td>
+<td>Vergleichsmodell behalten</td>
+<td>Du verstehst Training ohne die ganze Transformer-Komplexität.</td>
+</tr>
+<tr>
+<td>6 Eigener Transformer</td>
+<td>Maskierte Attention und ein kleiner Decoder</td>
+<td>Mehr Schichten und andere Bausteine</td>
+<td>Jetzt nutzt dein Modell mehrere frühere Tokens.</td>
+</tr>
+<tr>
+<td>7 Training</td>
+<td>Einen kleinen Batch lernen, dann getrennt validieren</td>
+<td>Lernratenplan, Mixed Precision</td>
+<td>Zuerst die Lernfähigkeit prüfen, dann länger trainieren.</td>
+</tr>
+<tr>
+<td>8 Ausgabe und Speichern</td>
+<td>Text erzeugen, bewerten, speichern und laden</td>
+<td>Saubere Fortsetzung langer Läufe</td>
+<td>Du erhältst ein nutzbares und überprüfbares Ergebnis.</td>
+</tr>
+<tr>
+<td>9 BPE</td>
+<td>Häufige Byte-Paare selbst zusammenführen</td>
+<td>Effizientere Implementierung</td>
+<td>Du verbesserst einen bereits funktionierenden Ablauf.</td>
+</tr>
+<tr>
+<td>10 Erweiterungen</td>
+<td>Nur bei einer klaren Frage erweitern</td>
+<td>Memmap, RoPE, GQA, SFT, Oberfläche</td>
+<td>Jede neue Idee lässt sich mit deinem Ausgangsmodell vergleichen.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Die Kapitel zu <strong>Tests</strong>, <strong>Zeit und Hardware</strong>, <strong>Dokumentation</strong> und <strong>deinem konkreten Anfang</strong> ergänzen diese Phasen. Tests und Journal begleiten dich ab dem ersten Tag.</p>
+<p>Du kannst BPE früher lernen, wenn dich dieser Algorithmus besonders interessiert. Es ist aber keine Voraussetzung für dein erstes trainiertes Sprachmodell. Ein Zeichenmodell ist ein vollwertiges erstes CLM.</p>
+<h3 id="so-findest-du-dich-im-leitfaden-zurecht">So findest du dich im Leitfaden zurecht</h3>
+<ul>
+<li><strong>Für heute:</strong> <a href="#was-du-eigentlich-baust">Grundidee</a>, <a href="#phase-0-deine-arbeitsumgebung-einrichten">Einrichtung</a> und <a href="#dein-konkreter-anfang">erste Arbeitssitzung</a>.</li>
+<li><strong>Für deine ersten Bausteine:</strong> <a href="#phase-1-die-benotigten-grundlagen-lernen">Grundlagen</a>, <a href="#phase-2-kleine-textdaten-auswahlen-und-aufteilen">Textdaten</a>, <a href="#phase-3-eine-einfache-tokenisierung-bauen">Tokens</a> und <a href="#phase-4-die-richtigen-trainingsbeispiele-erzeugen">Trainingsbeispiele</a>.</li>
+<li><strong>Für dein erstes lernendes Modell:</strong> <a href="#phase-5-ein-winziges-erstes-sprachmodell-bauen">Bigram</a>, <a href="#phase-6-deinen-eigenen-kleinen-transformer-entwickeln">Transformer</a>, <a href="#phase-7-den-trainingsprozess-verstehen-und-durchfuhren">Training</a> sowie <a href="#phase-8-text-erzeugen-und-trainingsstande-erhalten">Generierung und Speichern</a>.</li>
+<li><strong>Für spätere Ideen:</strong> <a href="#phase-9-bpe-schritt-fur-schritt-selbst-implementieren">Eigene BPE</a> sowie <a href="#phase-10-speicher-und-architektur-gezielt-erweitern">Memmap und Erweiterungen</a>.</li>
+<li><strong>Während des ganzen Projekts:</strong> <a href="#tests-und-fehlersuche-als-teil-deiner-arbeit">Tests</a>, <a href="#zeit-und-hardware-realistisch-planen">Zeit und Hardware</a> und <a href="#dein-mint-projekt-dokumentieren">Dokumentation mit Journalvorlage</a>.</li>
+</ul>
+<p>Pfadangaben wie <code>src/mintclm/model/attention.py</code> bezeichnen im Folgenden die Stelle innerhalb deines Repositorys <code>C:\Users\wunde\MintCLM\MintCLM 1.0</code>. Manche zusätzliche Übungsdateien legst du erst im jeweiligen Schritt an. Absolute Pfade für grosse Arbeitsdateien sind Beispiele für deinen Laptop und müssen auf anderen Geräten angepasst werden.</p>
+<h2 id="was-du-eigentlich-baust">Was du eigentlich baust</h2>
+<h3 id="sprachmodell-und-causal">Sprachmodell und causal</h3>
+<p>Ein Sprachmodell schätzt, welche Fortsetzung zu einem Text passt. Nach «Heute scheint die» könnte es beispielsweise «Sonne» wahrscheinlicher finden als «Schublade». Es erhält keine Liste fertiger Antworten. Seine Vorhersagen entstehen aus gelernten Zahlen und dem eingegebenen Text.</p>
+<p><strong>Causal</strong> bedeutet hier: Für die nächste Vorhersage darf das Modell nur den bisherigen Text verwenden. Es darf das gesuchte nächste Token und den restlichen zukünftigen Text nicht sehen. Der Begriff meint hier diese zeitliche Richtung, nicht ein Verständnis von Ursache und Wirkung.</p>
+<p>Stell dir den Text «MINT!» vor. Bei einem Token pro Zeichen entstehen Lernaufgaben wie:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bisheriger Text</th>
+<th>Gesuchtes nächstes Zeichen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M</td>
+<td>I</td>
+</tr>
+<tr>
+<td>MI</td>
+<td>N</td>
+</tr>
+<tr>
+<td>MIN</td>
+<td>T</td>
+</tr>
+<tr>
+<td>MINT</td>
+<td>!</td>
+</tr>
+</tbody>
+</table></div>
+<p>Ein Transformer kann solche Vorhersagen im Training für viele Positionen gleichzeitig berechnen. Eine <strong>Maske</strong> sperrt dabei den Blick nach rechts. Beim Erzeugen neuer Texte geht es dagegen Token für Token weiter, weil das nächste Token noch nicht feststeht.</p>
+<h3 id="die-wichtigsten-begriffe">Die wichtigsten Begriffe</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Begriff</th>
+<th>Verständliche Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Token</td>
+<td>Ein Textbaustein: zunächst ein Zeichen oder Byte, später vielleicht ein Wortteil.</td>
+</tr>
+<tr>
+<td>Token-ID</td>
+<td>Die ganze Zahl, mit der du einen Token bezeichnet hast. Eine grössere ID bedeutet keine stärkere Bedeutung.</td>
+</tr>
+<tr>
+<td>Vokabular</td>
+<td>Die Menge aller möglichen Token-IDs und ihrer Bedeutungen. Seine Grösse nennen wir <code>V</code>.</td>
+</tr>
+<tr>
+<td>Parameter</td>
+<td>Veränderbare Zahlen im Modell, zum Beispiel Einträge in einer Gewichtsmatrix.</td>
+</tr>
+<tr>
+<td>Hyperparameter</td>
+<td>Von dir gewählte Einstellungen, etwa Anzahl Schichten oder Lernrate. Sie werden im normalen Training nicht automatisch gelernt.</td>
+</tr>
+<tr>
+<td>Training</td>
+<td>Wiederholt vorhersagen, Fehler messen und Parameter ein kleines Stück anpassen.</td>
+</tr>
+<tr>
+<td>Loss</td>
+<td>Eine Zahl, die bewertet, wie schlecht die Vorhersage zum richtigen Ziel passt. Kleiner ist für dieselbe Aufgabe besser.</td>
+</tr>
+<tr>
+<td>Gradient</td>
+<td>Zeigt für jeden Parameter, wie sich der Loss bei einer kleinen Änderung ungefähr verändert.</td>
+</tr>
+<tr>
+<td>Optimierer</td>
+<td>Ein Verfahren, das aus Gradienten Parameteränderungen berechnet. Du verwendest später AdamW.</td>
+</tr>
+<tr>
+<td>Batch</td>
+<td>Mehrere Trainingsbeispiele, die zusammen verarbeitet werden.</td>
+</tr>
+<tr>
+<td>Kontext</td>
+<td>Die Tokens, die das Modell für eine Vorhersage berücksichtigen kann.</td>
+</tr>
+<tr>
+<td>Validierung</td>
+<td>Prüfung an zurückgehaltenen Texten, auf denen die Parameter nicht trainiert werden.</td>
+</tr>
+<tr>
+<td>Inferenz</td>
+<td>Anwenden des gelernten Modells. Textgenerierung ist eine Form davon.</td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td>Gespeicherter Modell- oder Trainingsstand.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Für einen einzelnen Zieltoken kann der Loss als <code>-log(p_richtig)</code> verstanden werden. Gibt dein Modell dem richtigen Token Wahrscheinlichkeit 0,5, beträgt dieser Loss ungefähr 0,693; bei 0,1 ungefähr 2,303. Eine selbstsichere falsche Vorhersage wird stark bestraft. Die Funktion <code>log</code> ist der natürliche Logarithmus; du musst ihn zunächst nur als Teil dieser Fehlerbewertung verstehen. Bei vielen Tokens wird gemittelt.</p>
+<h3 id="was-ein-neuronales-netz-und-ein-transformer-beitragen">Was ein neuronales Netz und ein Transformer beitragen</h3>
+<p>Ein neuronales Netz verknüpft einfache Rechenschritte mit veränderbaren Gewichten. Eine lineare Schicht bildet etwa aus einer Liste von Zahlen neue gewichtete Summen. Eine <strong>Aktivierungsfunktion</strong> wie ReLU oder GELU fügt eine nichtlineare Veränderung hinzu. Ohne solche Veränderungen würden viele hintereinandergelegte lineare Schichten insgesamt wieder nur eine lineare Abbildung ergeben.</p>
+<p>Ein <strong>Transformer</strong> ist eine bestimmte Anordnung solcher Bausteine. <strong>Attention</strong> lässt eine Textposition Informationen anderer erlaubter Positionen unterschiedlich stark berücksichtigen. In «Lea stellte die Tasse ab, weil sie heiss war» kann die frühere Erwähnung der Tasse für eine Fortsetzung nützlich sein. Welche Verbindungen ein winziges Modell tatsächlich lernt, musst du beobachten; die Architektur allein garantiert kein Sprachverständnis.</p>
+<p>Du baust einen <strong>Decoder-only Transformer</strong>: Token-Darstellungen laufen durch wiederholte Blöcke mit kausaler Self-Attention und kleinen neuronalen Netzen. Es gibt keinen zusätzlichen Encoder für eine zweite Eingabe. Das ursprüngliche Transformer-Paper beschreibt eine grössere Encoder-Decoder-Architektur; für MintCLM verwendest du nur die passende Grundidee. Vertiefung für später: <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>.</p>
+<h3 id="der-gesamte-ablauf">Der gesamte Ablauf</h3>
+<pre><code class="language-text">Texte auswählen → bereinigen → Duplikate behandeln → Dokumente aufteilen
+                                                     │
+                           ┌─────────────────────────┴───────────────┐
+                           ↓                                         ↓
+                      Trainingstexte                           Validierungstexte
+                           ↓                                         │
+              Tokenizer festlegen oder lernen                       │
+                           └──────── derselbe Tokenizer ─────────────┘
+                                             ↓
+                                         Token-IDs
+                                             ↓
+                              Eingaben und nächste Ziel-Tokens
+                                             ↓
+                     Modell → Vorhersagen → Loss → Gradienten → Update
+
+Nach dem Training:
+Starttext → Tokenizer → Modell → nächstes Token wählen → anhängen → wiederholen
+</code></pre>
+<p>Bei der Validierung fehlen Gradientenberechnung und Update. Ein BPE-Tokenizer wird ausschliesslich auf dem Trainingsteil gelernt. Der Validierungsteil darf seine Regeln nicht mitbestimmen.</p>
+<h3 id="was-du-erwarten-darfst">Was du erwarten darfst</h3>
+<p>Ein winziges Modell kann zunächst Zeichenhäufigkeiten und typische Übergänge lernen. Mit ausreichend passenden Daten und einem funktionierenden Transformer können Wortstücke, Interpunktion und kurze stilähnliche Passagen entstehen. Es kann trotzdem Wiederholungen, Unsinn und erfundene Aussagen erzeugen.</p>
+<p>Ein solches Modell ist noch kein zuverlässiger Chat-Assistent und kein Faktenlexikon. Es bekommt durch mehr Parameter allein auch keine verlässliche Mathematik oder Recherchefähigkeit. <strong>Dein überprüfbarer Erfolg ist zunächst: Der Ablauf funktioniert, der Loss entwickelt sich nachvollziehbar und du kannst erklären, warum.</strong> Ein kleiner Versuch, dessen Grenzen du verstehst, kann der sinnvolle Endpunkt deiner ersten Projektetappe sein.</p>
+<h2 id="phase-0-deine-arbeitsumgebung-einrichten">Phase 0 Deine Arbeitsumgebung einrichten</h2>
+<p><strong>Mindestziel:</strong> Ein Python-Skript und eine PyTorch-Rechnung laufen auf der CPU. GPU-Unterstützung prüfst du anschliessend. <strong>Später möglich:</strong> Arbeitsumgebungen für Workstation und DGX Spark. <strong>Vorwissen:</strong> Dateien und Ordner öffnen sowie Befehle in einer Konsole ausführen. <strong>Ablage:</strong> Einrichtung und Versionsangaben gehören in <code>docs/training/setup.md</code> innerhalb deines Repositorys.</p>
+<h3 id="deine-tatsachliche-ausgangslage">Deine tatsächliche Ausgangslage</h3>
+<p>Der geprüfte Projektordner ist:</p>
+<pre><code class="language-text">C:\Users\wunde\MintCLM\MintCLM 1.0
+</code></pre>
+<p>README, Anforderungen und Git-Ausschlüsse sind vorhanden. Die Python-Dateien und Konfigurationen sind derzeit Platzhalter. Es gibt noch kein startbares Trainingsprogramm. Auch eine Paketkonfiguration wie <code>pyproject.toml</code> ist noch nicht vorhanden.</p>
+<p>In der aktuellen PowerShell war weder <code>python</code> noch <code>py</code> erreichbar. Das beweist nicht, dass auf dem ganzen Computer nirgends Python installiert ist; möglicherweise fehlt nur die Einbindung in diese Konsole. <code>nvidia-smi</code> erkannte eine NVIDIA GeForce RTX 5060 mit <strong>8151 MiB angezeigtem Grafikspeicher</strong>, also ungefähr 8 GB, und Treiber <strong>621.24</strong>. Das ist eine Bestandsaufnahme und noch kein erfolgreicher PyTorch-Test.</p>
+<p>Der sichtbare Projektpfad liegt nicht unter dem gewöhnlichen kDrive-Ordner. Ob du ihn trotzdem mit kDrive synchronisierst, lässt sich am Pfad allein nicht erkennen. Prüfe die ausgewählten Synchronisierungsordner in kDrive.</p>
+<h3 id="a-python-und-treiber-prufen">0A Python und Treiber prüfen</h3>
+<p>Öffne PowerShell. Befehle aus <code>powershell</code>-Blöcken gehören dorthin. Python-Code gehört in eine <code>.py</code>-Datei oder in die Python-Konsole; kopiere diese beiden Arten nicht durcheinander.</p>
+<pre><code class="language-powershell">Get-Command python,py -ErrorAction SilentlyContinue
+python --version
+py -0p
+nvidia-smi
+</code></pre>
+<p>Es ist in Ordnung, wenn einer der beiden Python-Befehle fehlt. Wichtig ist, einen funktionierenden Interpreter zu finden. Ein <strong>Interpreter</strong> ist das Programm, das deine Python-Anweisungen ausführt.</p>
+<p>Wenn Python fehlt, verwende den offiziellen <a href="https://docs.python.org/3/using/windows.html">Python Install Manager für Windows</a>, erhältlich über <a href="https://www.python.org/downloads/">python.org</a>. Öffne nach der Installation eine neue Konsole. Für die unten geprüfte Paketkombination ist <strong>normales 64-Bit-Python 3.12</strong> eine konkrete Wahl; das ist keine Behauptung, dass es die neueste Python-Version sei.</p>
+<p>Mit dem neuen Install Manager:</p>
+<pre><code class="language-powershell">py install 3.12
+py -3.12 --version
+py -3.12 -c &quot;import platform, struct; print(platform.machine(), struct.calcsize('P') * 8)&quot;
+</code></pre>
+<p>Für den Windows-Laptop erwarten wir <code>AMD64</code> und <code>64</code>. <code>AMD64</code> bezeichnet hier die x86-64-Architektur und sagt nichts darüber aus, ob dein Prozessor von Intel oder AMD stammt. Falls <code>py install</code> nicht verstanden wird, hast du möglicherweise den alten Launcher: <code>py -0p</code> zeigt dessen vorhandene Versionen; folge für die Installation dem verlinkten offiziellen Windows-Weg.</p>
+<p>Wenn <code>nvidia-smi</code> scheitert, prüfe im Geräte-Manager, ob die NVIDIA-GPU erscheint, und verwende den für dein Notebook vorgesehenen Treiber von Lenovo oder NVIDIA. Die dort angezeigte CUDA-Version beschreibt die vom Treiber unterstützte CUDA-Version; sie ist weder die installierte PyTorch-Version noch ein Nachweis eines separat installierten CUDA Toolkits.</p>
+<h3 id="b-quellcode-und-grosse-arbeitsdateien-trennen">0B Quellcode und grosse Arbeitsdateien trennen</h3>
+<p>Vorschlag für einen zusätzlichen <strong>lokalen, nicht synchronisierten</strong> Arbeitsordner:</p>
+<pre><code class="language-text">C:\Users\wunde\MintCLM-local\
+├── envs\mintclm\
+├── data\raw\
+├── data\processed\
+├── data\tokenized\
+├── tokenizers\
+├── checkpoints\
+├── logs\
+└── outputs\
+</code></pre>
+<p>Prüfe, dass dieser Ordner nicht zu deinen kDrive-Synchronisierungsaufträgen gehört. Im Repository bleiben Code, kleine Einstellungen, Tests, Journal und kleine Ergebnisübersichten. Grosse Dateien liegen im lokalen Arbeitsordner. Die vorhandenen <code>data/</code>- und <code>artifacts/</code>-Unterordner dürfen vorerst Platzhalter bleiben.</p>
+<p><strong><code>.gitignore</code> beeinflusst nur Git. kDrive beachtet diese Datei nicht automatisch.</strong> Ebenso ist Synchronisierung kein vollständiger Ersatz für ein Backup: Bewahre später wichtige fertige Checkpoints zusätzlich an einem bewusst gewählten zweiten Ort auf. Kopiere abgeschlossene Dateien; lasse nicht zwei Rechner denselben laufend geschriebenen Trainingsstand bearbeiten.</p>
+<h3 id="c-eine-virtuelle-umgebung-erstellen">0C Eine virtuelle Umgebung erstellen</h3>
+<p>Eine virtuelle Umgebung ist ein eigener Satz von Python-Paketen für dieses Projekt. So kann MintCLM andere Paketversionen verwenden als ein anderes Projekt. Dein Quellcode liegt ausserhalb dieser Umgebung. Auf einem anderen Rechner erstellst du sie neu; du kopierst nicht den Windows-Umgebungsordner. Hintergrund: <a href="https://docs.python.org/3/library/venv.html">Python-Dokumentation zu venv</a>.</p>
+<p>Nach erfolgreicher Python-Prüfung:</p>
+<pre><code class="language-powershell">Set-Location -LiteralPath 'C:\Users\wunde\MintCLM\MintCLM 1.0'
+py -3.12 -m venv 'C:\Users\wunde\MintCLM-local\envs\mintclm'
+&amp; 'C:\Users\wunde\MintCLM-local\envs\mintclm\Scripts\Activate.ps1'
+python -c &quot;import sys; print(sys.executable)&quot;
+python -m pip install --upgrade pip
+</code></pre>
+<p><code>sys.executable</code> muss auf die neue Umgebung zeigen. <code>python -m pip</code> verwendet den Paketinstaller genau dieses Python-Interpreters.</p>
+<p>Falls PowerShell die Aktivierung blockiert, kannst du die Umgebung ohne Änderung der Ausführungsrichtlinie benutzen:</p>
+<pre><code class="language-powershell">&amp; 'C:\Users\wunde\MintCLM-local\envs\mintclm\Scripts\python.exe' -m pip --version
+</code></pre>
+<p>Ersetze dann in den folgenden Befehlen das führende <code>python</code> durch <code>&amp; 'C:\Users\wunde\MintCLM-local\envs\mintclm\Scripts\python.exe'</code>. Aktivierung ist eine Bequemlichkeit. Stelle auch im Editor diesen Interpreter ein. Mit <code>deactivate</code> verlässt du eine aktivierte Umgebung.</p>
+<h3 id="d-pytorch-passend-installieren">0D PyTorch passend installieren</h3>
+<p>Prüfe vor der Installation den <a href="https://pytorch.org/get-started/locally/">offiziellen PyTorch-Installationsassistenten</a>: <strong>Stable, Windows, Pip, Python, passende CUDA-Variante</strong>. Für die RTX-50-Generation brauchst du einen Build mit Blackwell-Unterstützung. PyTorch führte diese mit den CUDA-12.8-Builds von Version 2.7 ein; alte CUDA-Builds sind deshalb kein beliebiger Ersatz. Siehe <a href="https://pytorch.org/blog/pytorch-2-7/">PyTorch 2.7 Release</a>.</p>
+<p><strong>Zum Stand dieser Anleitung offiziell gelistetes konkretes Beispiel:</strong> PyTorch <strong>2.14.1 mit CUDA 13.0</strong> für Windows x86-64 und Python 3.12. Die Versionsseite nennt diesen CUDA-Index; im Paketverzeichnis ist das passende <code>cp312</code>-Paket für <code>win_amd64</code> vorhanden. Das ist eine verifizierte verfügbare Kombination, aber noch keine auf deinem Laptop erprobte Installation. <a href="https://pytorch.org/get-started/previous-versions/">Offizielle Versionsbefehle</a> und <a href="https://download.pytorch.org/whl/cu130/torch/">offizielles CUDA-13.0-Paketverzeichnis</a>.</p>
+<p>In der aktivierten Umgebung:</p>
+<pre><code class="language-powershell">python -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cu130
+python -m pip install numpy pytest
+</code></pre>
+<p><code>torchvision</code> und <code>torchaudio</code> aus manchen offiziellen Beispielen brauchst du für dieses Textprojekt zunächst nicht. Die benötigten CUDA-Laufzeitbibliotheken kommen beim üblichen PyTorch-Paket mit beziehungsweise werden als Paketabhängigkeiten installiert; ein separates CUDA Toolkit ist für die ersten Tensorrechnungen normalerweise nicht nötig. Für selbst kompilierte Erweiterungen kann sich das später ändern.</p>
+<p>Wenn du die Anleitung später benutzt, prüfe das dann angebotene Stable-Paket erneut und dokumentiere deinen tatsächlichen Befehl. Wähle nicht nur nach einer hohen Versionsnummer: Betriebssystem, Prozessorarchitektur, Python, GPU-Unterstützung und Treiber müssen zusammenpassen.</p>
+<h3 id="e-die-gpu-wirklich-rechnen-lassen">0E Die GPU wirklich rechnen lassen</h3>
+<p>Lege später selbst <code>notebooks/check_setup.py</code> im Projekt an und führe dieses kurze Diagnosebeispiel aus:</p>
+<pre><code class="language-python">import sys
+import torch
+
+print(&quot;Python:&quot;, sys.executable)
+print(&quot;PyTorch:&quot;, torch.__version__)
+print(&quot;CUDA-Build:&quot;, torch.version.cuda)
+print(&quot;CUDA verfügbar:&quot;, torch.cuda.is_available())
+
+device = torch.device(&quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;)
+if device.type == &quot;cuda&quot;:
+    print(&quot;GPU:&quot;, torch.cuda.get_device_name(0))
+
+x = torch.randn(8, 8, device=device, requires_grad=True)
+loss = (x @ x).square().mean()
+loss.backward()
+if device.type == &quot;cuda&quot;:
+    torch.cuda.synchronize()
+print(&quot;Rechnung auf:&quot;, x.device)
+print(&quot;Gradienten endlich:&quot;, torch.isfinite(x.grad).all().item())
+</code></pre>
+<p><code>@</code> ist Matrixmultiplikation. <code>backward()</code> berechnet Gradienten. Du musst diese Schritte heute noch nicht vollständig erklären; hier prüfen sie mehr als nur den Import. Das Programm sollte ohne Fehlermeldung enden und <code>Gradienten endlich: True</code> ausgeben. Bei erfolgreicher GPU-Nutzung steht beim Gerät <code>cuda:0</code>.</p>
+<pre><code class="language-powershell">python 'C:\Users\wunde\MintCLM\MintCLM 1.0\notebooks\check_setup.py'
+</code></pre>
+<p>Typische Befunde:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Befund</th>
+<th>Nächster sinnvoller Schritt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>No module named torch</code></td>
+<td>Mit <code>sys.executable</code> und <code>python -m pip --version</code> prüfen, ob Installation und Ausführung dieselbe Umgebung nutzen.</td>
+</tr>
+<tr>
+<td><code>torch.version.cuda</code> ist <code>None</code></td>
+<td>Du verwendest einen CPU-Build. Den passenden GPU-Build nach offizieller Anleitung in einer passenden Umgebung installieren.</td>
+</tr>
+<tr>
+<td>CUDA-Build vorhanden, aber <code>is_available()</code> ist falsch</td>
+<td>Treiber, sichtbare GPU und gegebenenfalls Container-GPU-Zugriff prüfen.</td>
+</tr>
+<tr>
+<td><code>no kernel image</code> oder Architekturwarnung</td>
+<td>Prüfen, ob der installierte PyTorch-Build die GPU-Generation unterstützt. Nicht einfach das Modell ändern.</td>
+</tr>
+<tr>
+<td>Speicherfehler</td>
+<td>Erst Batch und Kontext verkleinern; mit der winzigen Diagnose beginnen.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Wenn CUDA Zeit kostet:</strong> Mache die Lernübungen auf der CPU weiter. Falls schon der Import der GPU-Version scheitert, erstelle eine getrennte Umgebung <code>mintclm-cpu</code> und installiere dort die offiziell gelistete CPU-Variante:</p>
+<pre><code class="language-powershell">py -3.12 -m venv 'C:\Users\wunde\MintCLM-local\envs\mintclm-cpu'
+&amp; 'C:\Users\wunde\MintCLM-local\envs\mintclm-cpu\Scripts\Activate.ps1'
+python -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+python -m pip install numpy pytest
+</code></pre>
+<p>Wenn die Aktivierung blockiert wird, verwende wie in Phase 0C den vollständigen Interpreterpfad, diesmal mit <code>mintclm-cpu</code>. Für Zeichen-IDs, Gradientenübungen und ein sehr kleines Modell reicht die CPU als Einstieg.</p>
+<h3 id="f-deine-vorhandene-requirements.txt-verwenden">0F Deine vorhandene requirements.txt verwenden</h3>
+<p>Die Datei enthält derzeit <code>torch&gt;=2.7</code>, <code>numpy&gt;=1.26</code>, <code>PyYAML&gt;=6.0</code>, <code>tqdm&gt;=4.66</code>, <code>wandb&gt;=0.18</code>, <code>gradio&gt;=5.0</code> und <code>pytest&gt;=8.0</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Paket</th>
+<th>Deine Nutzung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>torch</td>
+<td>Tensoren, automatische Ableitungen, einfache Schichten und AdamW; deine Modellarchitektur entwickelst du selbst.</td>
+</tr>
+<tr>
+<td>numpy</td>
+<td>Arrays, Datenstatistik und später kompakte Datenspeicherung.</td>
+</tr>
+<tr>
+<td>pytest</td>
+<td>Automatisches Ausführen deiner Bausteintests.</td>
+</tr>
+<tr>
+<td>PyYAML</td>
+<td>Später Einstellungen aus YAML-Dateien lesen.</td>
+</tr>
+<tr>
+<td>tqdm</td>
+<td>Optionale Fortschrittsanzeige.</td>
+</tr>
+<tr>
+<td>wandb</td>
+<td>Optionaler Dienst für Experimentprotokolle; zunächst reichen lokale Dateien.</td>
+</tr>
+<tr>
+<td>gradio</td>
+<td>Optionale spätere Oberfläche.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Für den Einstieg reichen die bereits genannten Minimalpakete. Wenn du die vollständige Liste nutzen möchtest, installiere <strong>zuerst den passenden PyTorch-Build</strong>, dann:</p>
+<pre><code class="language-powershell">python -m pip install -r 'C:\Users\wunde\MintCLM\MintCLM 1.0\requirements.txt'
+python -m pip check
+</code></pre>
+<p><code>torch&gt;=2.7</code> ist nur eine Untergrenze. Sie legt weder eine feste Version noch den CUDA-Build fest. Prüfe nach Paketänderungen nochmals Version und GPU-Rechnung. Für einen dokumentierten Trainingslauf sichere eine Momentaufnahme:</p>
+<pre><code class="language-powershell">python -m pip freeze | Out-File -Encoding utf8 'C:\Users\wunde\MintCLM\MintCLM 1.0\docs\training\packages-windows.txt'
+</code></pre>
+<p>Notiere zusätzlich Python-Version, Plattform, Installationsbefehl und Treiber. <code>pip freeze</code> allein beschreibt nicht die ganze GPU-Umgebung. Kopiere eine Windows-Paketliste nicht blind auf ARM-Linux.</p>
+<h3 id="g-auf-linux-und-auf-den-dgx-spark-wechseln">0G Auf Linux und auf den DGX Spark wechseln</h3>
+<p>Unter Linux sieht eine lokale Umgebung beispielsweise so aus:</p>
+<pre><code class="language-bash">python3 --version
+uname -m
+python3 -m venv &quot;$HOME/mintclm-local/envs/mintclm&quot;
+source &quot;$HOME/mintclm-local/envs/mintclm/bin/activate&quot;
+</code></pre>
+<p>Falls <code>venv</code> fehlt, verwende das zu deiner Linux-Distribution passende Paket oder die bereitgestellte Umgebung des Betreuers. Die PyTorch-Installation wählst du danach für <strong>Linux und die angezeigte Architektur</strong>. Windows, WSL und Linux sind getrennte Umgebungen; eine in Windows funktionierende Installation wird nicht automatisch in WSL verfügbar.</p>
+<p>Der DGX Spark hat einen Arm-Prozessor und gemeinsamen Speicher für CPU und GPU. Für ihn sind ARM64-kompatible Pakete beziehungsweise ein passender NVIDIA-PyTorch-Container nötig. Ein Container ist eine vorbereitete Softwareumgebung; dein eigener Modellcode bleibt darin derselbe. Kläre mit der betreuenden Person einen aktuell unterstützten Container samt Versionskennung. Daten und Checkpoints müssen über eingebundene Ordner ausserhalb eines kurzlebigen Containers erhalten bleiben. <a href="https://docs.nvidia.com/dgx/dgx-spark/hardware.html">DGX-Spark-Hardware</a>, <a href="https://docs.nvidia.com/dgx/dgx-spark/software.html">Softwareübersicht</a> und <a href="https://docs.nvidia.com/dgx/dgx-spark/ngc.html">NGC-Umgebungen</a>.</p>
+<p>Übertrage Code, Einstellungen und benötigte Daten, erstelle die Umgebung neu und führe dort dieselben kleinen Tests aus. Verwende im Python-Code <code>pathlib.Path</code> statt überall Windows-Pfade fest einzubauen.</p>
+<p><strong>Weiter, wenn:</strong> Du weisst, welcher Interpreter läuft, und mindestens eine CPU-Rechnung gelingt. Ein noch ungelöstes GPU-Problem muss die nächsten Lernphasen nicht blockieren.</p>
+<h2 id="phase-1-die-benotigten-grundlagen-lernen">Phase 1 Die benötigten Grundlagen lernen</h2>
+<p><strong>Mindestziel:</strong> Du kannst Formen von Arrays erklären, einen Gradienten berechnen lassen und eine einfache Lernschleife beschreiben. <strong>Später möglich:</strong> Lineare Algebra, Statistik und Optimierung vertiefen. <strong>Vorwissen:</strong> Deine bisherigen Python-Grundlagen und das Ausführen eines kleinen Skripts. <strong>Ablage:</strong> Kleine Versuche in <code>notebooks/</code>, Erkenntnisse im Projektjournal. Lerne jeweils das, was du im nächsten Baustein brauchst.</p>
+<h3 id="dein-lernpfad-mit-uberprufbaren-ubungen">Dein Lernpfad mit überprüfbaren Übungen</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thema</th>
+<th>Wofür du es brauchst</th>
+<th>Kleine Übung</th>
+<th>Erreicht, wenn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Funktionen und Rückgabewerte</td>
+<td>Verarbeitungsschritte getrennt testen</td>
+<td>Schreibe <code>count_chars(text)</code>, die Zeichen zählt.</td>
+<td>Zwei kurze Testtexte ergeben die erwarteten Zahlen.</td>
+</tr>
+<tr>
+<td>Listen, Dictionaries, Schleifen</td>
+<td>Token-IDs und BPE-Paare verwalten</td>
+<td>Erzeuge eine Zeichen-zu-ID-Tabelle.</td>
+<td>Du kannst ein Zeichen nachschlagen und die ID zurückübersetzen.</td>
+</tr>
+<tr>
+<td>Dateien, UTF-8, JSON und pathlib</td>
+<td>Korpus und Einstellungen speichern</td>
+<td>Lies einen Text mit <code>ä</code> ein und speichere ein kleines Dictionary als JSON.</td>
+<td>Inhalt und Sonderzeichen bleiben erhalten.</td>
+</tr>
+<tr>
+<td>Klassen und Module</td>
+<td>Modell und Tokenizer strukturieren</td>
+<td>Eine kleine Klasse speichert eine Tabelle und hat eine <code>encode</code>-Methode.</td>
+<td>Du kannst erklären, was <code>self</code> und Objektzustand sind.</td>
+</tr>
+<tr>
+<td>NumPy und Formen</td>
+<td>Daten prüfen und kompakt ablegen</td>
+<td>Erzeuge sechs Zahlen, forme sie zu <code>(2, 3)</code> um, berechne Zeilenmittelwerte.</td>
+<td>Du kannst die Formen vor dem Ausführen vorhersagen.</td>
+</tr>
+<tr>
+<td>PyTorch-Tensoren</td>
+<td>Die Modellrechnung ausdrücken</td>
+<td>Multipliziere <code>(2, 3)</code> mit <code>(3, 4)</code>.</td>
+<td>Du erklärst das Ergebnis <code>(2, 4)</code> und den Unterschied zwischen <code>*</code> und <code>@</code>.</td>
+</tr>
+<tr>
+<td>Autograd</td>
+<td>Gradienten berechnen</td>
+<td>Verwende das Beispiel unten mit <code>w = 2</code>.</td>
+<td>Du verstehst, warum <code>w.grad</code> gleich 4 ist.</td>
+</tr>
+<tr>
+<td>Neuronales Netz</td>
+<td>Lernbare Rechenschritte verbinden</td>
+<td>Lerne mit <code>nn.Linear(1, 1)</code> die Beziehung <code>y = 2*x + 1</code>.</td>
+<td>Der mittlere quadratische Fehler sinkt, auch bei einem neuen Testwert.</td>
+</tr>
+<tr>
+<td>Loss und Optimierer</td>
+<td>Parameter sinnvoll ändern</td>
+<td>Lass einen einzelnen Parameter in Richtung 5 lernen.</td>
+<td>Du kannst Vorhersage, Loss, Gradient und Update unterscheiden.</td>
+</tr>
+<tr>
+<td>Batches und Validierung</td>
+<td>Lernen und Prüfen trennen</td>
+<td>Halte einige einfache Zahlenpaare vom Training zurück.</td>
+<td>Du misst den Fehler darauf ohne Parameteränderung.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Nutze passend dazu das <a href="https://docs.python.org/3.12/tutorial/">offizielle Python-Tutorial</a>, den <a href="https://numpy.org/doc/stable/user/absolute_beginners.html">NumPy-Einstieg</a> und <a href="https://docs.pytorch.org/tutorials/beginner/basics/intro.html">PyTorch Learn the Basics</a>. Die PyTorch-Beispiele verwenden teilweise Bilder: Du kannst die Tensor- und Lernideen trotzdem verwenden, ohne ein Bildmodell nachzubauen.</p>
+<h3 id="arrays-und-tensorformen-greifbar-machen">Arrays und Tensorformen greifbar machen</h3>
+<pre><code class="language-python">import numpy as np
+
+a = np.arange(6).reshape(2, 3)
+print(a)
+print(a.shape)
+print(a.mean(axis=1))
+</code></pre>
+<p>Du erhältst zwei Zeilen mit je drei Zahlen: <code>[0, 1, 2]</code> und <code>[3, 4, 5]</code>. <code>shape</code> ist <code>(2, 3)</code>. <code>axis=1</code> fasst die Spalten innerhalb jeder Zeile zusammen; die Mittelwerte sind <code>[1., 4.]</code>. <code>reshape</code> ändert die Anordnung, nicht die Anzahl der Elemente.</p>
+<p>Ein Tensor ist hier ein Zahlenfeld mit beliebig vielen Achsen. PyTorch-Tensoren können zusätzlich auf einer GPU liegen und an automatischen Ableitungen beteiligt sein. Für Token-IDs verwenden wir <code>torch.long</code>, für lernbare Gewichte zunächst Gleitkommazahlen wie <code>float32</code>. <code>shape</code>, <code>dtype</code> und <code>device</code> beantworten drei unterschiedliche Fragen: <strong>Welche Form? Welche Art Zahlen? Auf welchem Gerät?</strong> <a href="https://docs.pytorch.org/tutorials/beginner/basics/tensorqs_tutorial.html">PyTorch-Tensoren</a>.</p>
+<h3 id="einen-gradienten-selbst-nachvollziehen">Einen Gradienten selbst nachvollziehen</h3>
+<pre><code class="language-python">import torch
+
+w = torch.tensor(2.0, requires_grad=True)
+loss = w ** 2
+loss.backward()
+print(loss.item())
+print(w.grad.item())
+</code></pre>
+<p>Beide Ausgaben sind <code>4.0</code>, aus unterschiedlichen Gründen: Der Loss ist <code>2²</code>; die Steigung von <code>w²</code> bei 2 ist <code>2*w = 4</code>. Ein positiver Gradient bedeutet hier: Ein kleines Erhöhen von <code>w</code> erhöht den Loss. Zum Verkleinern gehen wir ein Stück in die Gegenrichtung. Autograd verfolgt die Rechenschritte und berechnet diese Ableitungen für dich. Vertiefung: <a href="https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html">PyTorch Autograd</a>.</p>
+<p>Als nächste Übung ersetzt du den Loss durch <code>(w - 5) ** 2</code>. Bei <code>w = 2</code> ist der Gradient <code>-6</code>. Erkläre vor dem Ausführen, weshalb ein Update gegen diesen Gradienten <code>w</code> erhöhen sollte.</p>
+<p><strong>Typische Fehler:</strong> Eine Ganzzahl kann nicht als normaler lernbarer Gleitkommaparameter dienen; Gradienten addieren sich bei mehreren <code>backward()</code>-Aufrufen; <code>detach()</code> oder eine Umwandlung in normale Python-Zahlen kann die Ableitungskette unterbrechen. Wenn eine Form unerwartet ist, drucke nach jedem Schritt <code>shape</code> aus. Versuche nicht, Formprobleme nur durch zufälliges <code>reshape</code> zu beseitigen.</p>
+<p><strong>Weiter, wenn:</strong> Du kannst ein <code>(B, T)</code>-Array als <code>B</code> Beispiele mit je <code>T</code> Tokens lesen und erklären, warum der Optimierer Gradienten braucht.</p>
+<h2 id="phase-2-kleine-textdaten-auswahlen-und-aufteilen">Phase 2 Kleine Textdaten auswählen und aufteilen</h2>
+<p><strong>Ziel:</strong> Du weisst, was deine Daten enthalten und was später als unbekannter Text geprüft wird. <strong>Vorwissen:</strong> Textdateien, Listen und Dictionaries. <strong>Ablage:</strong> <code>src/mintclm/data/cleaning.py</code>, <code>deduplication.py</code>, <code>split.py</code>; Quellen in <code>docs/data/sources.md</code>, Verarbeitung in <code>docs/data/preparation.md</code>. Die grossen Originaldateien liegen im lokalen Arbeitsordner.</p>
+<p><strong>Mindestziel:</strong> Einige selbst geschriebene kurze Texte. Für den ersten technischen Test genügen wenige Sätze; später kannst du beispielsweise einige Hundert Kilobyte bis wenige Megabyte sorgfältig ausgewählter Texte erproben. Das ist eine Arbeitsgrössen-Empfehlung, keine Qualitätsgarantie. <strong>Später möglich:</strong> Mehrere Quellen, Sprachfilter und Erkennung sehr ähnlicher Texte.</p>
+<ol>
+<li>Schreibe zunächst einige eigene Absätze. So kennst du den Inhalt und kannst Veränderungen leicht beurteilen.</li>
+<li>Erfasse je Dokument eine Kennung, Herkunft, Sprache und die für deine Nutzung geklärten Rechte. Verwende für den Anfang keine privaten Chats oder personenbezogenen Sammlungen.</li>
+<li>Lies die Texte als UTF-8. Zähle Dokumente, Zeichen und Bytes; ein Umlaut oder Emoji kann mehr als ein Byte belegen.</li>
+<li>Schaue Anfang, Ende und zufällige Abschnitte an. Suche leere Texte, defekte Zeichen, wiederholte Kopfzeilen und unpassende Inhalte.</li>
+<li>Definiere eine kleine Bereinigung, etwa einheitliche Zeilenenden. Bewahre Rohdaten unverändert auf. Entferne Leerzeichen, Satzzeichen oder Grossschreibung nicht ohne konkrete Begründung.</li>
+<li>Entferne identische bereinigte Dokumente. Mit einem Hash, beispielsweise SHA-256, bekommst du eine kompakte Kennung des Inhalts. Behandle auch erkennbare Varianten derselben Vorlage gemeinsam.</li>
+<li>Teile <strong>Dokumente oder zusammengehörige Dokumentgruppen</strong> vor der Tokenisierung in Training und Validierung auf. Eine anfängliche Wahl sind etwa 90/10 Prozent bei ausreichend vielen Dokumenten. Notiere einen festen Zufalls-Seed und speichere die tatsächlichen Dokument-IDs je Teil.</li>
+</ol>
+<p>Ein <strong>Seed</strong> ist ein Startwert für einen Zufallszahlengenerator. Dieselbe Auswahl lässt sich damit unter denselben Bedingungen leichter wiederholen. Für Reproduzierbarkeit ist das gespeicherte Aufteilungsverzeichnis noch hilfreicher als nur die Seed-Zahl.</p>
+<p><strong>Warum vor den Trainingsfenstern aufteilen?</strong> Zwei stark überlappende Fenster desselben Textes dürfen nicht in verschiedenen Teilen landen. Sonst sieht die Validierung unbekannt aus, enthält aber beinahe bereits gelernte Abschnitte. Das heisst Datenleck oder <em>data leakage</em>.</p>
+<p>Bei nur einem langen Text kannst du einen zusammenhängenden letzten Abschnitt zurückhalten und erst danach innerhalb beider Teile Fenster bilden. Es darf kein Fenster die Grenze überschreiten. Notiere, dass beide Teile aus derselben Quelle stammen. Für eine spätere Abschlussbewertung kannst du zusätzlich einen festen Testteil vorsehen; er bleibt bei Modellentscheidungen unangetastet. Bei winzigen Spielzeugdaten wären drei Teile zunächst eher verwirrend als hilfreich.</p>
+<p><strong>Prüfung:</strong> Dokumentzahlen und Längen vor und nach der Bereinigung protokollieren; einige Beispiele nebeneinander ansehen; sicherstellen, dass kein Inhalts-Hash in Training und Validierung vorkommt. Das erkennt exakte, aber noch keine leicht veränderten Duplikate.</p>
+<p><strong>Fehler eingrenzen:</strong> Wenn fast nichts übrig bleibt, prüfe deine Filter an fünf Dokumenten. Wenn Validierung später erstaunlich gut wirkt, prüfe zuerst gemeinsame Texte und Vorlagen. Wenn eine Datei unlesbar wird, prüfe die Zeichenkodierung vor Änderungen am Modell.</p>
+<p><strong>Weiter, wenn:</strong> Du kannst Herkunft, Bereinigung und Aufteilung deiner kleinen Sammlung erklären und die Dokumentlisten erneut erzeugen oder laden.</p>
+<h2 id="phase-3-eine-einfache-tokenisierung-bauen">Phase 3 Eine einfache Tokenisierung bauen</h2>
+<p><strong>Ziel:</strong> Text zuverlässig in Zahlen und zurück umwandeln. <strong>Vorwissen:</strong> Dictionaries, Indizes und UTF-8-Grundidee. <strong>Ablage:</strong> Ein neuer kleiner Baustein <code>src/mintclm/tokenizer/char.py</code> oder <code>byte.py</code>; <code>bpe.py</code> bleibt für später. Tests in <code>tests/test_tokenizer.py</code>.</p>
+<p><strong>Mindestziel:</strong> Ein Zeichen-Tokenizer für einen festgelegten Spielzeugtext. <strong>Später möglich:</strong> Byte-Tokenizer und BPE.</p>
+<h3 id="erst-einmal-ein-zeichen-pro-token">Erst einmal ein Zeichen pro Token</h3>
+<pre><code class="language-python">text = &quot;MINT!&quot;
+chars = sorted(set(text))
+stoi = {ch: i for i, ch in enumerate(chars)}
+itos = {i: ch for ch, i in stoi.items()}
+
+ids = [stoi[ch] for ch in text]
+restored = &quot;&quot;.join(itos[i] for i in ids)
+print(ids)
+assert restored == text
+</code></pre>
+<p><code>set</code> sammelt unterschiedliche Zeichen. <code>sorted</code> bringt sie in eine feste Reihenfolge. <code>enumerate</code> vergibt IDs ab 0. Hier ist die Tabelle <code>!→0, I→1, M→2, N→3, T→4</code>; die Ausgabe lautet <code>[2, 1, 3, 4, 0]</code>. <code>assert</code> bricht ab, wenn die folgende Bedingung falsch ist.</p>
+<p>Formuliere daraus selbst zwei Funktionen: <code>encode(text)</code> und <code>decode(ids)</code>. Teste auch Leerzeichen und Zeilenumbrüche. Für dieses Minibeispiel baust du das Vokabular aus dem ganzen Spielzeugtext, weil du nur die Umwandlung untersuchst. <strong>Für eine echte Auswertung</strong> leitest du ein gelerntes Zeichenvokabular nur aus Trainingstexten ab oder legst das Alphabet im Voraus fest.</p>
+<p>Ein unbekanntes Zeichen führt sonst zu einem <code>KeyError</code>. Du kannst eine klar dokumentierte Fehlermeldung ausgeben. Ein <code>&lt;UNK&gt;</code>-Token für unbekannte Zeichen wäre möglich, verhindert aber die exakte Wiederherstellung dieses ursprünglichen Zeichens.</p>
+<h3 id="bytes-als-unkomplizierte-nachste-stufe">Bytes als unkomplizierte nächste Stufe</h3>
+<pre><code class="language-python">text = &quot;Grüezi 🙂&quot;
+ids = list(text.encode(&quot;utf-8&quot;))
+restored = bytes(ids).decode(&quot;utf-8&quot;)
+assert restored == text
+</code></pre>
+<p>Ein Byte hat einen Wert von 0 bis 255. Mit diesen 256 Grundtokens kannst du jeden gültigen UTF-8-Text darstellen, ohne ein Zeichenalphabet aus der Validierung abzuleiten. Dafür werden manche Zeichen mehrere Tokens lang. Ein Byte-Tokenizer lernt noch keine Zusammenführungen; genau das ergänzt später BPE.</p>
+<p>Die verlustfreie Prüfung gilt für den <strong>Text, den du an den Tokenizer übergibst</strong>. Wenn die Bereinigung davor Leerzeichen verändert hat, kann der Tokenizer die entfernten Originalzeichen nicht zurückholen.</p>
+<p><strong>Prüfung:</strong> Leerer Text, normale Wörter, doppelte Leerzeichen, <code>\n</code>, Umlaute, Emoji und wiederholte Zeichen müssen für die jeweils unterstützte Eingabe korrekt zurückkommen. Speichere und lade die Zeichentabelle, statt die IDs bei jeder Nutzung neu zu vergeben.</p>
+<p><strong>Typische Fehler:</strong> <code>str.split()</code> wirft Informationen über Leerzeichen weg; unterschiedliche Tabellen zwischen Training und Generierung machen IDs bedeutungslos; einzelne UTF-8-Bytes lassen sich nicht immer getrennt als Zeichen decodieren.</p>
+<p><strong>Weiter, wenn:</strong> <code>decode(encode(text)) == text</code> für deine Testfälle gilt und du erklären kannst, warum ID 100 keine «grössere Bedeutung» als ID 10 hat.</p>
+<h2 id="phase-4-die-richtigen-trainingsbeispiele-erzeugen">Phase 4 Die richtigen Trainingsbeispiele erzeugen</h2>
+<p><strong>Ziel:</strong> Zu jedem sichtbaren Token passt genau das folgende Zieltoken. <strong>Vorwissen:</strong> Slicing und Tensorformen. <strong>Ablage:</strong> <code>src/mintclm/data/dataset.py</code>, <code>scripts/tokenize_data.py</code>, <code>tests/test_data.py</code>.</p>
+<p><strong>Mindestziel:</strong> Kurze Fenster fester Länge in einem Tensor im Arbeitsspeicher. Kein Padding, kein Memmap und keine parallelen Ladeprozesse nötig. <strong>Später möglich:</strong> Variable Längen, mehrere Leseprozesse oder kompakte Dateien.</p>
+<pre><code class="language-python">import torch
+
+tokens = torch.tensor([2, 1, 3, 4, 0], dtype=torch.long)
+x = tokens[:-1]
+y = tokens[1:]
+print(x.tolist())  # [2, 1, 3, 4]
+print(y.tolist())  # [1, 3, 4, 0]
+</code></pre>
+<p>Das entspricht <code>MINT</code> als Eingabe und <code>INT!</code> als Ziel. Die Ausgabe an der Position des <code>M</code> soll also das <code>I</code> vorhersagen. Das Verschieben passiert in deinem Ablauf <strong>genau einmal</strong>. Wenn du bereits <code>x</code> und <code>y</code> so baust, darf die Loss-Berechnung sie nicht nochmals verschieben.</p>
+<p>Für Kontextlänge <code>T</code> brauchst du <code>T+1</code> aufeinanderfolgende Tokens. Ein Fenster ab Start <code>s</code> ergibt:</p>
+<pre><code class="language-text">x = tokens[s : s+T]
+y = tokens[s+1 : s+T+1]
+</code></pre>
+<p>Bei einem Strom mit <code>N</code> Tokens gilt <code>0 ≤ s ≤ N-T-1</code>. <code>torch.randint(0, N-T, ...)</code> verwendet eine ausgeschlossene obere Grenze und passt dazu, sofern <code>N &gt; T</code>.</p>
+<p>Mehrere Fenster bilden einen Batch. Unsere Notation für alle folgenden Kapitel:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Zeichen</th>
+<th>Bedeutung</th>
+<th>Erstes Beispiel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B</td>
+<td>Batchgrösse</td>
+<td>4</td>
+</tr>
+<tr>
+<td>T</td>
+<td>Kontextlänge</td>
+<td>32</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Breite der internen Darstellung</td>
+<td>64</td>
+</tr>
+<tr>
+<td>V</td>
+<td>Vokabulargrösse</td>
+<td>256 bei Bytes ohne Sondertokens</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Anzahl Attention-Köpfe</td>
+<td>4</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>x</code> und <code>y</code> haben Form <code>(B, T)</code> und Datentyp <code>torch.long</code>. Das Modell liefert später <code>(B, T, V)</code>: für jedes Beispiel und jede Position einen Wert pro möglichem nächsten Token.</p>
+<p>Beginne mit Fenstern innerhalb einzelner ausreichend langer Dokumente. Kurze Dokumente kannst du für diesen ersten Versuch zurückstellen und diese Auswahl dokumentieren. Wenn du später Dokumente zu einem Strom zusammensetzt, füge ein eigenes End-of-document-Token ein und erkläre die gewählte Strategie. Ein solches Token markiert eine Grenze, <strong>sperrt aber nicht automatisch Attention über diese Grenze</strong>. Wirklich unabhängige gepackte Dokumente benötigen zusätzlich eine passende Attention-Maske.</p>
+<p><strong>Prüfung:</strong> Drucke Eingabe und Ziel sowohl als IDs als auch als Text aus. Prüfe <code>x.shape == y.shape</code>, ganzzahlige IDs und <code>0 &lt;= ID &lt; V</code>. Training und Validierung müssen getrennte Datenobjekte verwenden. Beim ersten <code>DataLoader</code> ist <code>num_workers=0</code> unter Windows eine einfache Wahl; mehrere Worker und der nötige <code>if __name__ == &quot;__main__&quot;:</code>-Einstieg kommen später.</p>
+<p><strong>Typische Fehler:</strong> Ziel entspricht der Eingabe, letztes Fenster ist zu kurz, ein zufälliges Fenster überquert die Datengrenze oder Padding wird als echter Inhalt bewertet. Der erste Fehler kann einen erfreulich kleinen Loss liefern, obwohl das Modell nur abschreibt.</p>
+<p><strong>Weiter, wenn:</strong> Du kannst fünf zufällige Fenster von Hand prüfen und weisst für jede Position, welches Token vorhergesagt werden soll.</p>
+<h2 id="phase-5-ein-winziges-erstes-sprachmodell-bauen">Phase 5 Ein winziges erstes Sprachmodell bauen</h2>
+<p><strong>Ziel:</strong> Die ganze Lernaufgabe verstehen, bevor Attention hinzukommt. <strong>Vorwissen:</strong> Parameter, Tensorformen und verschobene Ziele. <strong>Ablage:</strong> Ein neuer Baustein <code>src/mintclm/model/bigram.py</code>; kleine Versuche in <code>notebooks/</code>, Tests in <code>tests/test_model.py</code> und <code>tests/test_training.py</code>.</p>
+<p><strong>Mindestziel:</strong> Ein Bigram-Modell. <strong>Später möglich:</strong> Es als Vergleich für deinen Transformer behalten. <em>Bigram</em> bedeutet hier: Das Modell sagt das nächste Token ausschliesslich anhand des unmittelbar vorherigen Tokens voraus. Es ist bereits ein kausales Sprachmodell, verwendet aber noch keinen Transformer.</p>
+<p>Stell dir eine Tabelle mit <code>V</code> Zeilen und <code>V</code> Spalten vor. Jede Zeile gehört zu einem gerade gelesenen Token, jede Spalte zu einem möglichen Folgetoken. Die Tabelleneinträge sind lernbare Zahlen. Für <code>a</code> liest du die Zeile <code>a</code> aus und erhältst die Bewertungen für alle möglichen nächsten Tokens.</p>
+<p>Diese rohen Bewertungen heissen <strong>Logits</strong>. Mit <strong>Softmax</strong> lassen sie sich in positive Wahrscheinlichkeiten umwandeln, die zusammen 1 ergeben. Für die Loss-Berechnung gibst du die rohen Logits direkt an PyTorch weiter.</p>
+<p>Deine Umsetzungsschritte:</p>
+<ol>
+<li>Definiere eine Klasse, die von <code>torch.nn.Module</code> erbt. Damit werden ihre lernbaren Teile von PyTorch erfasst.</li>
+<li>Lege eine lernbare Tabelle der Form <code>(V, V)</code> an. <code>nn.Embedding(V, V)</code> ist dafür ein einfacher PyTorch-Grundbaustein: Er wählt Zeilen anhand von IDs aus.</li>
+<li>Implementiere <code>forward(idx)</code> so, dass zu <code>(B, T)</code> Eingabe die Form <code>(B, T, V)</code> zurückkommt.</li>
+<li>Drucke die Parameterzahl aus: <code>sum(p.numel() for p in model.parameters())</code>. Für diese Tabelle allein sind es <code>V * V</code> Parameter.</li>
+<li>Verbinde das Modell mit der Trainingsschleife aus Phase 7. Verwende zuerst ein eindeutiges Spielzeugmuster wie <code>abcabcabc...</code>.</li>
+</ol>
+<p>Lies dafür direkt Phase 7A bis 7C und kehre nach dem ersten gelungenen Bigram-Lernversuch zu Phase 6 zurück. Du brauchst den Transformer für diesen ersten Versuch noch nicht.</p>
+<p>Warum dieses Muster? Nach <code>a</code> folgt immer <code>b</code>, nach <code>b</code> immer <code>c</code>, nach <code>c</code> immer <code>a</code>. Ein Bigram-Modell kann das lernen. Bei einem echten Satz kann auf dasselbe Zeichen vieles folgen; dann kann ein Bigram-Modell selbst durch Auswendiglernen nicht jeden Zieltoken sicher treffen.</p>
+<p><strong>Prüfung:</strong> Für zwei Eingabebeispiele mit je vier Tokens muss die Ausgabe <code>(2, 4, V)</code> haben. Ändere die Token-ID an genau einer Position: Beim Bigram-Modell darf sich nur die Ausgabe dieser Position ändern. Nach dem Spielzeugtraining sollte eine Generierung typische Übergänge des Musters zeigen.</p>
+<p><strong>Typische Fehler:</strong> Eine normale, nicht registrierte Tabelle wird vom Optimierer übersehen; Eingabe-IDs liegen ausserhalb des Vokabulars; du erwartest lange Zusammenhänge von einem Modell, das nur ein Token berücksichtigt. Prüfe zuerst die Parameterliste und die Ausgabeform.</p>
+<p><strong>Weiter, wenn:</strong> Du kannst erklären, welche Tabellenzeile eine Vorhersage erzeugt und weshalb dieses Modell «Heute scheint die» nicht als ganzen Zusammenhang berücksichtigt.</p>
+<h2 id="phase-6-deinen-eigenen-kleinen-transformer-entwickeln">Phase 6 Deinen eigenen kleinen Transformer entwickeln</h2>
+<p><strong>Ziel:</strong> Vorhersagen können mehrere frühere Tokens berücksichtigen. <strong>Vorwissen:</strong> Matrixmultiplikation, Embeddings, Softmax, Formen und die Trainingsaufgabe. <strong>Ablage:</strong> <code>src/mintclm/model/config.py</code>, <code>attention.py</code>, <code>layers.py</code>, <code>transformer.py</code>; Entwurfsnotizen in <code>docs/architecture/design.md</code>.</p>
+<p><strong>Mindestziel:</strong> Ein kleiner Decoder mit selbst aufgebauter kausaler Attention und einem oder zwei Blöcken. <strong>Später möglich:</strong> Mehr Blöcke, andere Normierung, RoPE, GQA und SwiGLU. Die dafür vorhandenen Platzhalter müssen jetzt noch keinen Code enthalten.</p>
+<h3 id="a-die-erste-architektur-festlegen">6A Die erste Architektur festlegen</h3>
+<p>Eine mögliche kleine Ausgangskonfiguration ist:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Einstellung</th>
+<th>Vorschlag für einen Lernversuch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tokens</td>
+<td>Zeichen oder die 256 Bytes; zusätzliche Sondertokens bei <code>V</code> mitrechnen</td>
+</tr>
+<tr>
+<td>Kontextlänge <code>T</code></td>
+<td>Zunächst 32, danach beispielsweise 64</td>
+</tr>
+<tr>
+<td>Modellbreite <code>C</code></td>
+<td>64</td>
+</tr>
+<tr>
+<td>Attention-Köpfe <code>H</code></td>
+<td>4, also 16 Zahlen je Kopf</td>
+</tr>
+<tr>
+<td>Blöcke</td>
+<td>Zunächst 1, danach 2</td>
+</tr>
+<tr>
+<td>Breite im Feedforward-Netz</td>
+<td><code>4 * C</code>, hier 256</td>
+</tr>
+<tr>
+<td>Batchgrösse <code>B</code></td>
+<td>Zunächst 2 oder 4</td>
+</tr>
+<tr>
+<td>Dropout</td>
+<td>Für die ersten Korrektheitsprüfungen 0</td>
+</tr>
+<tr>
+<td>Rechengenauigkeit</td>
+<td>Zunächst float32</td>
+</tr>
+</tbody>
+</table></div>
+<p>Das sind überschaubare Startwerte, keine gemessene optimale Konfiguration für deine GPU. Zähle die tatsächlichen Parameter im Code und miss den Speicherbedarf.</p>
+<p>Deine erste Architektur kann so aussehen:</p>
+<pre><code class="language-text">Token-IDs (B,T)
+    ↓ Token-Embedding + gelerntes Positions-Embedding
+Darstellungen (B,T,C)
+    ↓ ein oder zwei Decoder-Blöcke
+    ↓ abschliessende Normierung
+    ↓ lineare Ausgabe auf V mögliche Tokens
+Logits (B,T,V)
+
+Ein Decoder-Block:
+h = h + Attention(Norm(h))
+h = h + Feedforward(Norm(h))
+</code></pre>
+<p>Ein <strong>Embedding</strong> übersetzt eine ID in einen lernbaren Zahlenvektor. Die Positions-Embeddings ergänzen, an welcher Stelle ein Token steht. <strong>Normierung</strong> hält die Grössenordnungen der Darstellungen in einem kontrollierten Bereich. Die Addition des alten <code>h</code> heisst <strong>Residualverbindung</strong>: Der Block ergänzt eine vorhandene Darstellung, statt sie vollständig ersetzen zu müssen. Die hier gezeigte Anordnung mit Normierung vor dem jeweiligen Teil heisst <em>Pre-Norm</em>.</p>
+<p>Du verwendest PyTorch für Grundbausteine wie <code>nn.Linear</code>, <code>nn.Embedding</code>, zunächst <code>nn.LayerNorm</code> und eine Aktivierungsfunktion. Die Anordnung, Attention-Rechnung, kausale Maske, Datenführung und Trainingslogik entwickelst du selbst. Ein kompletter <code>nn.Transformer</code> oder ein vortrainiertes Modell würde diesen Lernschritt vorwegnehmen. Wenn du später auch LayerNorm selbst umsetzt, vergleiche zunächst die Ergebnisse mit dem einfachen PyTorch-Baustein.</p>
+<h3 id="b-attention-in-kleinen-schritten-verstehen">6B Attention in kleinen Schritten verstehen</h3>
+<p>Aus jeder Darstellung berechnest du drei neue Darstellungen durch lernbare lineare Abbildungen:</p>
+<ul>
+<li><strong>Query Q:</strong> Welche Information suche ich an dieser Position?</li>
+<li><strong>Key K:</strong> Woran könnte eine andere Position als passend erkannt werden?</li>
+<li><strong>Value V:</strong> Welche Information liefert diese Position bei einer Verbindung?</li>
+</ul>
+<p>Das <code>V</code> in <em>Value</em> ist hier eine Matrix; in unseren Formtabellen bezeichnet <code>V</code> dagegen die Vokabulargrösse. Im Code sind Namen wie <code>value</code> und <code>vocab_size</code> eindeutiger.</p>
+<p>Für einen Kopf vergleichst du jede Query mit den erlaubten Keys. Ein Skalarprodukt ist dabei eine Summe paarweise multiplizierter Zahlen. Ähnliche Ausrichtung kann einen hohen Vergleichswert ergeben. Durch Softmax werden daraus Gewichte; eine gewichtete Summe der Values liefert die neue Darstellung. Die vereinfachte Formel lautet:</p>
+<pre><code class="language-text">scores  = (Q @ Kᵀ) / sqrt(d)
+weights = softmax(maskiere(scores))
+output  = weights @ value
+</code></pre>
+<p><code>d</code> ist die Breite eines Kopfes. Die Teilung durch <code>sqrt(d)</code> hält die Skala der Vergleichswerte handhabbar. <code>Kᵀ</code> vertauscht die letzten beiden Achsen. Du brauchst die Formel zunächst lesen und mit kleinen Formen ausprobieren zu können; ein vollständiger mathematischer Beweis ist kein Einstiegshindernis.</p>
+<h3 id="c-die-kausale-maske-ausprobieren">6C Die kausale Maske ausprobieren</h3>
+<p>Dieses <strong>eigenständig ausführbare Rechenbeispiel</strong> zeigt einen Kopf ohne Training:</p>
+<pre><code class="language-python">import math
+import torch
+
+torch.manual_seed(7)
+T, d = 4, 2
+q = torch.randn(T, d)
+k = torch.randn(T, d)
+value = torch.randn(T, d)
+
+scores = (q @ k.T) / math.sqrt(d)
+allowed = torch.ones(T, T, dtype=torch.bool).tril()
+scores = scores.masked_fill(~allowed, float(&quot;-inf&quot;))
+weights = torch.softmax(scores, dim=-1)
+output = weights @ value
+
+print(weights)
+print(output.shape)
+assert torch.all(weights.triu(diagonal=1) == 0)
+assert torch.allclose(weights.sum(dim=-1), torch.ones(T))
+</code></pre>
+<p>Die erlaubten Verbindungen sehen so aus:</p>
+<pre><code class="language-text">           Information von Position
+           0  1  2  3
+Position 0 ✓  ×  ×  ×
+Position 1 ✓  ✓  ×  ×
+Position 2 ✓  ✓  ✓  ×
+Position 3 ✓  ✓  ✓  ✓
+</code></pre>
+<p><code>tril()</code> behält das untere Dreieck einschliesslich der Diagonale. Eine Position darf ihr eigenes <strong>Eingabe</strong>token sehen, weil sie das <strong>nächste</strong> Token vorhersagen soll. Verbotene Werte werden vor Softmax zu minus unendlich; dadurch ist ihr Gewicht nach Softmax null. Die Diagonale bleibt erlaubt, damit keine Zeile vollständig gesperrt ist.</p>
+<p>Baue danach Batch und Köpfe hinzu. Mit <code>C = H * d</code> werden aus <code>(B,T,C)</code> die Formen <code>(B,H,T,d)</code>. Die Scores erhalten <code>(B,H,T,T)</code>. Nach der Mischung setzt du die Köpfe wieder zu <code>(B,T,C)</code> zusammen und verwendest eine Ausgabeprojektion. <strong>Multi-Head Attention</strong> bedeutet mehrere solcher Kopf-Rechnungen mit unterschiedlichen lernbaren Abbildungen.</p>
+<p>Schreibe nach jedem Schritt die erwartete Form auf. Ein <code>transpose</code> kann die Speicheranordnung verändern; zum erneuten Zusammenfassen ist <code>reshape</code> oft einfacher als ein unvorbereitetes <code>view</code>. Entscheidend ist aber, dass du die Achsen korrekt zurückordnest.</p>
+<h3 id="d-den-block-zusammensetzen">6D Den Block zusammensetzen</h3>
+<ol>
+<li>Token- und Positions-Embeddings addieren. Für Positionen reichen zunächst IDs <code>0</code> bis <code>T-1</code>.</li>
+<li>Die selbst geschriebene Attention mit Residualverbindung ergänzen.</li>
+<li>Ein Feedforward-Netz anfügen: <code>Linear(C, 4*C)</code>, GELU oder ReLU, dann <code>Linear(4*C, C)</code>. Es bearbeitet jede Position mit denselben Gewichten einzeln.</li>
+<li>Normierung, zunächst <code>nn.LayerNorm(C)</code>, an den gezeigten Stellen verwenden. Über die letzte Achse <code>C</code> normieren, nicht über spätere Textpositionen.</li>
+<li>Den vollständigen Block zunächst einmal anwenden.</li>
+<li>Abschliessend normieren und mit <code>Linear(C, vocab_size)</code> auf Logits abbilden.</li>
+<li>Alle Bausteine als registrierte Module speichern, etwa mit <code>nn.ModuleList</code> für mehrere Blöcke.</li>
+</ol>
+<p><strong>Prüfung:</strong> Ausgabeform, endliche Zahlen, kausales Verhalten und ein einziger vollständiger Vorwärts- und Rückwärtsschritt. Die konkrete Kausalitätsprüfung steht im Testkapitel. Erst danach mehrere Blöcke verwenden.</p>
+<p><strong>Typische Fehler:</strong> Softmax läuft über die falsche Achse; <code>C</code> ist nicht durch <code>H</code> teilbar; das obere Dreieck bleibt offen; Residualverbindungen addieren unterschiedliche Formen; die Maske liegt auf der CPU, die Gewichte auf der GPU. Bei <code>NaN</code> prüfst du, ob eine Attention-Zeile vollständig maskiert wurde.</p>
+<p><strong>Weiter, wenn:</strong> Du kannst den Weg von <code>(B,T)</code> nach <code>(B,T,V)</code> erklären und eine Änderung zukünftiger Eingabe-Tokens lässt frühere Ausgaben unverändert.</p>
+<p>Später darfst du deine verständliche Attention durch eine optimierte PyTorch-Rechnung ersetzen. Vergleiche die Ergebnisse zuerst numerisch. Beachte die jeweilige Maskenbedeutung: Bei <code>scaled_dot_product_attention</code> bedeutet ein boolesches <code>True</code> eine erlaubte Position; andere APIs können andere Konventionen haben. Mit gleich langen Q/K-Sequenzen ist <code>is_causal=True</code> eine mögliche spätere Variante. <a href="https://docs.pytorch.org/docs/2.14/generated/torch.nn.functional.scaled_dot_product_attention.html">Offizielle SDPA-Dokumentation</a>.</p>
+<h2 id="phase-7-den-trainingsprozess-verstehen-und-durchfuhren">Phase 7 Den Trainingsprozess verstehen und durchführen</h2>
+<p><strong>Ziel:</strong> Dein Modell verbessert seine Vorhersagen und du kannst das messen. <strong>Vorwissen:</strong> Loss, Gradienten, Batches und Modellaufruf. <strong>Ablage:</strong> <code>src/mintclm/training/pretrain.py</code>, später <code>scheduler.py</code>; Einstieg in <code>scripts/train.py</code>; Einstellungen in <code>configs/pretrain.yaml</code>; Tests in <code>tests/test_training.py</code>. Logs und Checkpoints liegen im lokalen Arbeitsordner.</p>
+<p><strong>Mindestziel:</strong> Erst einen festen kleinen Batch lernen, danach ein kurzes Training mit getrennter Validierung durchführen. <strong>Später möglich:</strong> Warmup, Cosine-Lernratenplan, Gradient Accumulation, Mixed Precision und längere Läufe.</p>
+<h3 id="a-die-loss-berechnung-prufen">7A Die Loss-Berechnung prüfen</h3>
+<p>Dein Modell liefert rohe Logits <code>(B,T,V)</code>, die Ziele haben <code>(B,T)</code>. Für Cross-Entropy kannst du alle Positionen zu einer Liste von Vorhersagen zusammenfassen:</p>
+<pre><code class="language-python"># Ausschnitt: model, x und y wurden vorher von dir erzeugt.
+import torch.nn.functional as F
+
+logits = model(x)
+vocab_size = logits.shape[-1]
+loss = F.cross_entropy(
+    logits.reshape(-1, vocab_size),
+    y.reshape(-1),
+)
+</code></pre>
+<p><code>-1</code> lässt PyTorch die passende zusammengefasste Grösse berechnen. Die Reihenfolge von Beispielen und Positionen muss in beiden Feldern übereinstimmen. Vor dieser Funktion verwendest du <strong>kein zusätzliches Softmax</strong>; Cross-Entropy verarbeitet Logits selbst. Die Ziele sind ganzzahlige Klassen-IDs. <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html">PyTorch CrossEntropyLoss</a>.</p>
+<p>Wenn alle Tokens gleich wahrscheinlich wären, wäre der Loss <code>log(V)</code>. Bei 256 Tokens ist das ungefähr 5,545. Das ist ein grober Kontrollwert für eine gleichförmige Vorhersage, kein vorgeschriebener exakter Startwert deines zufällig initialisierten Modells.</p>
+<h3 id="b-die-erste-lernschleife-zusammensetzen">7B Die erste Lernschleife zusammensetzen</h3>
+<p>Die Reihenfolge eines Updates ist:</p>
+<ol>
+<li>Gradienten vom vorherigen Update zurücksetzen.</li>
+<li>Vorhersagen und Loss berechnen.</li>
+<li>Mit <code>backward()</code> Gradienten berechnen.</li>
+<li>Bei Bedarf sehr grosse Gradienten begrenzen.</li>
+<li>Den Optimierer die Parameter ändern lassen.</li>
+</ol>
+<p>Dieses Muster setzt dein bereits gebautes <code>model</code> und einen Batch <code>x, y</code> voraus:</p>
+<pre><code class="language-python">import torch
+import torch.nn.functional as F
+
+optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=0.01)
+model.train()
+
+optimizer.zero_grad(set_to_none=True)
+logits = model(x)
+loss = F.cross_entropy(logits.reshape(-1, logits.shape[-1]), y.reshape(-1))
+loss.backward()
+grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+optimizer.step()
+
+print(&quot;Loss:&quot;, loss.item(), &quot;Gradientennorm:&quot;, float(grad_norm))
+</code></pre>
+<p><code>3e-4</code> bedeutet <code>0.0003</code> und ist nur ein möglicher Startwert für deinen kleinen Transformer. <strong>Lernrate</strong> bedeutet, grob gesprochen, wie gross die Änderungen ausfallen. AdamW passt Änderungen anhand vergangener Gradienten an; <em>weight decay</em> zieht bestimmte Gewichte zusätzlich etwas in Richtung null. Zunächst darfst du eine einfache gemeinsame Einstellung verwenden. Später kannst du begründet Parametergruppen bilden, etwa für Normierungsgewichte und Bias-Werte. <a href="https://docs.pytorch.org/docs/2.14/generated/torch.optim.AdamW.html">AdamW-Dokumentation</a>.</p>
+<p><strong>Gradient Clipping</strong> begrenzt hier die gemeinsame Gradientennorm auf höchstens 1. Es ersetzt keine korrekte Lernrate und repariert keine falschen Daten. Wenn du später float16 mit GradScaler verwendest, müssen die Gradienten vor dem Clipping zuerst entskaliert werden.</p>
+<h3 id="c-ein-sehr-kleines-beispiel-absichtlich-auswendig-lernen">7C Ein sehr kleines Beispiel absichtlich auswendig lernen</h3>
+<p>Bevor du längere Läufe startest, wiederholst du einige Hundert Updates auf <strong>demselben kleinen Batch</strong>. Deaktiviere für diesen Test Dropout und gegebenenfalls Weight Decay. Du willst wissen, ob Daten, Modell, Loss und Optimierer grundsätzlich zusammenarbeiten.</p>
+<p>Für den ersten Bigram-Test eignet sich das eindeutige <code>abc</code>-Muster. Für den Transformer kannst du einen kleinen festen Batch aus einem kurzen Text verwenden. Achte darauf, dass nicht identische sichtbare Kontexte unterschiedliche Ziele verlangen. Sonst ist ein Loss nahe null grundsätzlich nicht erreichbar.</p>
+<p>Notiere den Loss am Anfang und in festen Abständen. Er sollte deutlich sinken; ein exakter Zielwert ist nicht für jedes Beispiel sinnvoll. Wenn er sich überhaupt nicht bewegt, prüfe vor einem grösseren Modell:</p>
+<ul>
+<li>Enthält der Optimierer die Modellparameter?</li>
+<li>Sind die Gradienten nach <code>backward()</code> vorhanden und endlich?</li>
+<li>Ändert sich mindestens ein Parameter nach <code>optimizer.step()</code>?</li>
+<li>Sind <code>x</code> und <code>y</code> richtig verschoben und nicht leer?</li>
+<li>Läuft die Trainingsrechnung ohne <code>torch.no_grad()</code>?</li>
+<li>Ist die Lernrate versehentlich null oder extrem klein?</li>
+</ul>
+<p>Absichtliches <strong>Overfitting</strong> bedeutet hier Auswendiglernen als Funktionstest. Es beweist noch keine Fähigkeit für unbekannte Texte. Nach diesem Test initialisierst du für deine eigentlichen Vergleichsläufe ein frisches Modell.</p>
+<h3 id="d-training-und-validierung-auseinanderhalten">7D Training und Validierung auseinanderhalten</h3>
+<p>Im normalen Training ziehst du Batches nur aus den Trainingsdaten. In festen Abständen prüfst du eine feste Auswahl von Validierungsfenstern oder den ganzen überschaubaren Validierungsteil.</p>
+<p>Für die Prüfung brauchst du beides:</p>
+<pre><code class="language-python"># Ausschnitt: Die Validierungs-Batches und Loss-Berechnung ergänzt du selbst.
+model.eval()
+with torch.no_grad():
+    # Vorhersagen und Loss auf Validierungsdaten berechnen.
+    pass
+model.train()
+</code></pre>
+<p><code>eval()</code> ändert beispielsweise Dropout-Verhalten. <code>no_grad()</code> schaltet die Gradientenverfolgung ab. Diese beiden Aufgaben sind verschieden. Für den mittleren Validierungs-Loss addierst du die Loss-Summen und teilst durch die Anzahl bewerteter Ziel-Tokens. Ein ungewichteter Mittelwert aus ungleich grossen Batches wäre ungenau.</p>
+<p>Protokolliere Schrittzahl, verarbeitete Tokens, Trainings-Loss, Validierungs-Loss und Lernrate. Für spätere Vergleiche miss auch den Trainings-Loss auf einer festen Auswahl im <code>eval()</code>-Modus; der laufende Trainings-Loss mit Dropout ist sonst nicht direkt gleichartig.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Beobachtung</th>
+<th>Mögliche Bedeutung und Prüfung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Beide Loss-Werte sinken</td>
+<td>Das Modell lernt auch Muster, die auf die zurückgehaltenen Daten passen. Trotzdem Datenüberschneidungen prüfen.</td>
+</tr>
+<tr>
+<td>Training sinkt, Validierung steigt</td>
+<td>Mögliches Overfitting. Früheren guten Stand vergleichen, Datenmenge und Modellgrösse prüfen.</td>
+</tr>
+<tr>
+<td>Beide bleiben fast gleich</td>
+<td>Lernrate, Zielverschiebung, Parameterupdates und Datensatz prüfen.</td>
+</tr>
+<tr>
+<td>Plötzlich <code>NaN</code> oder <code>inf</code></td>
+<td>Letzten endlichen Schritt finden; Eingaben, Masken, Gradienten und Lernrate prüfen. Zunächst float32 verwenden.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Validierungsdaten beeinflussen durch deine Modellentscheidungen indirekt das Projekt. Nutze einen späteren separaten Testteil deshalb erst für eine abschliessende Bewertung.</p>
+<h3 id="e-erst-nach-einem-funktionierenden-lauf-erweitern">7E Erst nach einem funktionierenden Lauf erweitern</h3>
+<p>Ein <strong>Lernratenplan</strong> verändert die Lernrate während des Trainings. Eine spätere einfache Wahl: erst über einige Updates ansteigen lassen (<em>Warmup</em>), danach mit einer Cosinuskurve allmählich senken. Zum Beispiel könntest du 5 Prozent der geplanten Updates als Warmup und am Ende 10 Prozent der maximalen Lernrate erproben. Das sind Versuchsentscheidungen, keine feststehenden optimalen Werte. Prüfe den Plan als kleine Tabelle oder Kurve vor dem Lauf und speichere seinen Zustand mit.</p>
+<p><strong>Gradient Accumulation</strong> verarbeitet mehrere kleine Teilbatches vor einem Update. Bei <code>K</code> gleich grossen Teilbatches teilst du jeden mittleren Loss vor <code>backward()</code> durch <code>K</code>, setzt Gradienten nur am Anfang zurück und führst Clipping und Optimiererschritt erst nach allen Teilbatches aus. Die effektive Batchgrösse ist dann <code>B * K</code>. Mehr Kontextlänge erhältst du dadurch nicht.</p>
+<p><strong>Mixed Precision</strong> verwendet teilweise kleinere Zahlenformate. Erprobe später bfloat16 mit dem für dein Gerät unterstützten <code>torch.autocast</code>; halte den float32-Lauf als Vergleich. Ein halbierter Zahlenbedarf einzelner Tensoren bedeutet nicht, dass der ganze Trainingsspeicher halbiert wird. <code>torch.compile</code> ist ebenfalls eine spätere Optimierung: zuerst korrekte Ausgaben und Messwerte, dann Kompilierungsaufwand und mögliche Beschleunigung auf der konkreten Plattform prüfen.</p>
+<p><strong>Weiter, wenn:</strong> Ein eindeutiges Minibeispiel lernbar ist, die kausalen Tests bestehen und du getrennte Trainings- und Validierungswerte protokollieren kannst. Erst dann lohnt sich ein längerer Trainingslauf.</p>
+<h2 id="phase-8-text-erzeugen-und-trainingsstande-erhalten">Phase 8 Text erzeugen und Trainingsstände erhalten</h2>
+<p><strong>Ziel:</strong> Dein Modell anwenden, kritisch beurteilen und nach einer Pause wiederverwenden. <strong>Vorwissen:</strong> Logits, Wahrscheinlichkeiten, Kontexte und gespeicherte Dateien. <strong>Ablage:</strong> <code>src/mintclm/inference/generate.py</code>, <code>evaluation/metrics.py</code>, <code>training/checkpoint.py</code>; Einstieg in <code>scripts/evaluate.py</code>; Tests in <code>tests/test_evaluation.py</code> und <code>tests/test_training.py</code>.</p>
+<p><strong>Mindestziel:</strong> Eine kurze Fortsetzung erzeugen, eine kleine Auswertung notieren und Gewichte in einem neuen Programmprozess wieder laden. <strong>Später möglich:</strong> Mehrere Sampling-Verfahren, automatische Vergleichsauswertungen und vollständige Trainingsfortsetzung.</p>
+<h3 id="a-tokens-nacheinander-erzeugen">8A Tokens nacheinander erzeugen</h3>
+<ol>
+<li>Einen nicht leeren Starttext mit genau dem zum Modell gehörenden Tokenizer codieren.</li>
+<li>Die IDs als Tensor der Form <code>(1, Länge)</code> auf dasselbe Gerät wie das Modell bringen.</li>
+<li><code>model.eval()</code> verwenden und innerhalb von <code>torch.no_grad()</code> vorhersagen.</li>
+<li>Höchstens die letzten <code>T</code> Tokens als Kontext verwenden.</li>
+<li>Nur die <strong>letzte Position</strong> der Modellausgabe nehmen. Ihre Logits beschreiben das nächste Token.</li>
+<li>Ein Token auswählen, anhängen und die Schritte wiederholen.</li>
+<li>Nach einer festen Maximallänge oder beim eigenen End-Token stoppen.</li>
+</ol>
+<p>Das Modell muss Text nicht auf einmal erzeugen. Du erweiterst die Eingabe nach jeder Vorhersage um genau ein Token. Bei deinen gelernten Positions-Embeddings werden die Positionen im jeweils verwendeten Kontextfenster von 0 an vergeben. Sehr lange oder übergreifende Zusammenhänge ausserhalb dieses Fensters stehen dem einfachen Modell nicht zur Verfügung.</p>
+<p><strong>Greedy-Auswahl</strong> nimmt immer den höchsten Logit. Sie ist einfach und kann schnell in Wiederholungen geraten. <strong>Sampling</strong> zieht ein Token zufällig gemäss den Wahrscheinlichkeiten. Bei Sampling beeinflusst eine <strong>Temperatur</strong> die Verteilung:</p>
+<pre><code class="language-python"># Ausschnitt: logits hat Form (B,T,V); temperature muss positiv sein.
+temperature = 0.8
+next_logits = logits[:, -1, :] / temperature
+probs = torch.softmax(next_logits, dim=-1)
+next_id = torch.multinomial(probs, num_samples=1)
+</code></pre>
+<p>Eine kleinere positive Temperatur betont die bevorzugten Tokens stärker; eine grössere macht die Auswahl gleichmässiger. Temperatur 0 behandelst du mit einem gesonderten Greedy-Zweig, statt durch null zu teilen. <strong>Top-k</strong> kann später vor Softmax alle bis auf die <code>k</code> bestbewerteten Tokens ausschliessen. Es muss mindestens ein Token übrig bleiben.</p>
+<p>Für einen leeren Starttext brauchst du eine eigene, vorher trainierte Startkonvention, beispielsweise ein Begin-of-sequence-Token. Für den Einstieg gibst du einfach ein bekanntes Zeichen oder einen kurzen Startsatz ein.</p>
+<p>Bei Byte- und Byte-BPE-Modellen können beliebig erzeugte Tokenfolgen ungültige UTF-8-Bytefolgen bilden. Für die Anzeige darfst du eine gesonderte Decodierung mit <code>errors=&quot;replace&quot;</code> verwenden; Ersatzzeichen wie <code>�</code> zeigen dann ein Ergebnisproblem an. Die strenge Wiederherstellungsprüfung des Tokenizers bleibt unverändert. Decodiere vollständige Bytefolgen, nicht jeden Token einzeln.</p>
+<h3 id="b-ergebnisse-nachvollziehbar-bewerten">8B Ergebnisse nachvollziehbar bewerten</h3>
+<p>Lege zum Beispiel fünf feste Starttexte fest und speichere jeweils eine kurze Fortsetzung. Notiere Modellstand, Temperatur, Sampling-Seed und maximale Länge. Bewahre auch schwache Beispiele auf. Nur die schönste Ausgabe auszuwählen würde den tatsächlichen Zustand verzerren.</p>
+<p>Beurteile getrennt:</p>
+<ul>
+<li><strong>Messbare Vorhersagequalität:</strong> Validierungs-Loss auf einem festgelegten Datenteil.</li>
+<li><strong>Lesbare Muster:</strong> Entstehen erkennbare Wörter, Satzzeichen oder ein passender Stil?</li>
+<li><strong>Grenzen:</strong> Wiederholungen, abgebrochene Wörter, widersprüchliche Aussagen, Ersatzzeichen oder offensichtliche Kopien.</li>
+</ul>
+<p>Ein niedrigerer Loss garantiert nicht, dass jede einzelne Fortsetzung besser klingt. <strong>Perplexity</strong> ist <code>exp(mittlerer Cross-Entropy-Loss)</code>, sofern du den natürlichen Logarithmus und eine konsistente Bewertung verwendest. Sie ist eine weitere Darstellung derselben Vorhersagequalität; kleiner ist bei gleicher Aufgabe besser.</p>
+<p>Vergleiche Token-Loss und Perplexity nur bei gleichem Tokenizer, gleichem Bewertungsinhalt und gleicher Zählweise direkt. Ein Byte- und ein BPE-Token decken unterschiedlich viel Text ab. Bei einem späteren Vergleich verschiedener Tokenizer kannst du die aufsummierten negativen Logwahrscheinlichkeiten zusätzlich auf die ursprüngliche UTF-8-Bytemenge beziehen: <code>bits_per_byte = nll_sum / (log(2) * anzahl_bytes)</code>. Dafür müssen Texte und Konventionen für Start, Ende und Kontext vergleichbar sein; einfach mittlere Token-Loss-Werte nebeneinanderzustellen reicht nicht.</p>
+<p><strong>Prüfung:</strong> Starte mit zehn neuen Tokens. Kontrolliere, dass die Eingabe je Schleifendurchlauf um eins wächst und nie mehr als <code>T</code> Tokens an das Modell gehen. Ein trainiertes <code>abc</code>-Bigram-Modell sollte das bekannte Muster oft fortsetzen.</p>
+<p><strong>Typische Fehler:</strong> Die erste statt der letzten Ausgabeposition verwenden; das neue Token nicht anhängen; Tokenizer verwechseln; <code>model.train()</code> bei Generierung mit Dropout aktiv lassen; ein Startzeichen verwenden, das dein Zeichen-Tokenizer nicht kennt. Prüfe zuerst die IDs und die Eingabelänge.</p>
+<h3 id="c-gewichte-und-trainingsstand-unterscheiden">8C Gewichte und Trainingsstand unterscheiden</h3>
+<p>Zum reinen Erzeugen brauchst du mindestens Modellgewichte, Architekturkonfiguration und genau den passenden Tokenizer. Zur sinnvollen Trainingsfortsetzung brauchst du zusätzlich den Zustand des Optimierers sowie Schrittzähler und gegebenenfalls Lernratenplan und GradScaler. Das erneute Laden von Gewichten allein stellt AdamWs Verlauf nicht wieder her. <a href="https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html">PyTorch zum Speichern und Laden</a>.</p>
+<p>Dieses <strong>Muster</strong> setzt vorhandene Objekte und eine Konfiguration als Dictionary aus einfachen Zahlen, Zeichenketten und Listen voraus:</p>
+<pre><code class="language-python">checkpoint = {
+    &quot;model&quot;: model.state_dict(),
+    &quot;optimizer&quot;: optimizer.state_dict(),
+    &quot;step&quot;: step,
+    &quot;config&quot;: config_dict,
+    &quot;tokenizer_id&quot;: tokenizer_hash,
+}
+torch.save(checkpoint, checkpoint_path)
+</code></pre>
+<p><code>state_dict()</code> ist ein Dictionary mit den gespeicherten Zuständen. Ein Hash der Tokenizer-Datei hilft dir zu erkennen, ob genau dieselben Regeln verwendet werden. Speichere zusätzlich die Tokenizer-Datei selbst, die Datenaufteilung beziehungsweise deren Kennung und die verwendeten Softwareversionen. Ein Hash ersetzt diese Inhalte nicht.</p>
+<p>Zum Laden baust du deine Modellklasse mit der gespeicherten Konfiguration erneut auf und übernimmst die Gewichte:</p>
+<pre><code class="language-python"># Muster: MintCLM und der gerätespezifische Aufbau werden von dir implementiert.
+checkpoint = torch.load(checkpoint_path, map_location=&quot;cpu&quot;, weights_only=True)
+model = MintCLM(**checkpoint[&quot;config&quot;])
+model.load_state_dict(checkpoint[&quot;model&quot;])
+model.eval()
+</code></pre>
+<p>Der Klassenname ist hier ein Vorschlag; dieses Beispiel läuft erst, wenn deine Klasse diese Konfigurationsfelder akzeptiert. Speichere einfache Dictionaries und Tensoren statt das gesamte Python-Modellobjekt. Das macht Änderungen und Gerätewechsel leichter nachvollziehbar. Lade für diese Übungen deine eigenen Checkpoints; die Herkunft fremder Dateien muss vor dem Laden geklärt sein.</p>
+<p>Für Fortsetzung setzt du das Modell auf das Zielgerät, erzeugst den passenden Optimierer und lädst seinen Zustand ebenfalls. Prüfe die Geräte seiner Zustands-Tensoren und stelle <code>model.train()</code> ein. Lade gegebenenfalls den Lernratenplan und verwende als nächsten Schritt den korrekt fortgesetzten Zähler.</p>
+<p><strong>Für möglichst genaue Fortsetzung</strong> kommen Zufallszustände von Python, NumPy und PyTorch inklusive CUDA sowie die Position oder der Zustand der Batch-Auswahl hinzu. Speichere anfangs nur direkt nach einem abgeschlossenen Optimiererschritt. Dann musst du keine halb angesammelten Gradienten erhalten. Ein Seed allein beschreibt nicht, wie weit der Zufallszahlengenerator bereits gelaufen ist. Selbst mit diesen Zuständen sind identische Ergebnisse über verschiedene Geräte und Softwareversionen nicht allgemein garantiert. <a href="https://docs.pytorch.org/docs/2.14/notes/randomness.html">PyTorch zur Reproduzierbarkeit</a>.</p>
+<p>Schreibe einen Checkpoint zunächst vollständig in eine temporäre Datei im selben lokalen Ordner und ersetze danach den endgültigen Namen. Das verringert das Risiko, einen bestehenden guten Stand durch einen unterbrochenen Schreibvorgang zu verlieren. Bewahre für längere Läufe mindestens den neuesten und den besten Validierungsstand getrennt auf.</p>
+<p><strong>Prüfung:</strong> Vergleiche vor und nach dem Laden auf derselben CPU und im <code>eval()</code>-Modus die Logits derselben Eingabe mit <code>torch.testing.assert_close</code>. Führe ausserdem nach dem Laden einen weiteren Trainingsschritt aus. Der ausführlichere Fortsetzungstest steht im nächsten Testkapitel.</p>
+<p><strong>Weiter, wenn:</strong> Du kannst in einem neuen Prozess mit geladenen Gewichten dieselben Vorhersagen berechnen und die verwendete Modell- und Tokenizerkonfiguration eindeutig zuordnen.</p>
+<h2 id="phase-9-bpe-schritt-fur-schritt-selbst-implementieren">Phase 9 BPE Schritt für Schritt selbst implementieren</h2>
+<p><strong>Ziel:</strong> Häufige Bytefolgen bekommen gemeinsame Tokens. <strong>Vorwissen:</strong> Byte-Tokenisierung, Dictionaries, Zählen, Slicing und Dateispeicherung. <strong>Ablage:</strong> <code>src/mintclm/tokenizer/bpe.py</code>, <code>scripts/train_tokenizer.py</code>, <code>tests/test_tokenizer.py</code>; Tokenizer-Dateien im lokalen <code>tokenizers/</code>-Ordner. Kleine Versuchsergebnisse können ins Repository.</p>
+<p><strong>Mindestziel:</strong> Eine einfache, deterministische Byte-BPE-Implementierung auf wenigen kurzen Dokumenten. <strong>Später möglich:</strong> Schnellere Paarzählung, Verarbeitung grösserer Korpora und ein kontrollierter Vergleich mit dem Byte-Modell.</p>
+<h3 id="a-die-grundidee-von-hand-nachvollziehen">9A Die Grundidee von Hand nachvollziehen</h3>
+<p><strong>Byte Pair Encoding</strong> beginnt hier mit 256 Tokens: eines pro Byte. Danach fasst du häufige benachbarte Token-Paare zu neuen Tokens zusammen. So kann ein oft vorkommendes Wortstück in einem Schritt dargestellt werden.</p>
+<p>Für das ASCII-Wort <code>banana</code> kannst du die Bytes zunächst wie Zeichen lesen:</p>
+<pre><code class="language-text">Start:             b | a | n | a | n | a
+Häufiges Paar:          a n       a n
+Nach einem Merge:  b | an | an | a
+</code></pre>
+<p><code>an</code> und <code>na</code> kommen je zweimal vor. Du brauchst also eine <strong>feste Gleichstandsregel</strong>. Eine mögliche Wahl ist das lexikografisch kleinste Paar von IDs: Zuerst wird die erste Zahl verglichen, bei Gleichstand die zweite. Bei den ASCII-IDs gewinnt dann <code>(a,n)</code>. Ein <em>Merge</em> ist eine Zusammenführungsregel, beispielsweise <code>(97,110) → 256</code>.</p>
+<p>Das neue Token 256 bedeutet die Bytefolge <code>[97,110]</code>. Bei späteren Merges können auch schon zusammengeführte Tokens beteiligt sein. Die Bedeutung eines neuen Tokens ist immer die aneinandergehängte Bytefolge seiner beiden Vorgänger.</p>
+<p>Guter nächster Lerntext: der <a href="https://huggingface.co/learn/llm-course/chapter6/5">BPE-Kurs von Hugging Face</a>. Er erläutert den Algorithmus; du verwendest ihn als Erklärung und schreibst deine eigene Umsetzung. Die ursprüngliche Anwendung auf Wortteile findest du später in <a href="https://aclanthology.org/P16-1162/">Neural Machine Translation of Rare Words with Subword Units</a>.</p>
+<h3 id="b-kleine-funktionen-statt-eines-grossen-programms-schreiben">9B Kleine Funktionen statt eines grossen Programms schreiben</h3>
+<p>Baue und prüfe nacheinander:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Funktion oder Methode</th>
+<th>Aufgabe</th>
+<th>Einfacher Kontrollfall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>count_pairs(sequences)</code></td>
+<td>Benachbarte ID-Paare je Dokument zählen</td>
+<td><code>[1,2,1,2]</code> enthält <code>(1,2)</code> zweimal und <code>(2,1)</code> einmal.</td>
+</tr>
+<tr>
+<td><code>choose_pair(counts)</code></td>
+<td>Häufigstes Paar mit fester Gleichstandsregel wählen</td>
+<td>Zwei gleich häufige Paare liefern immer dieselbe Wahl.</td>
+</tr>
+<tr>
+<td><code>merge_pair(ids, pair, new_id)</code></td>
+<td>Ein Paar links nach rechts ohne Überlappung ersetzen</td>
+<td><code>[1,1,1]</code> wird bei <code>(1,1)→256</code> zu <code>[256,1]</code>.</td>
+</tr>
+<tr>
+<td><code>train(documents, num_merges)</code></td>
+<td>Wiederholt zählen, wählen, ersetzen und Regel speichern</td>
+<td>Gleicher Korpus und gleiche Einstellungen liefern gleiche Regeln.</td>
+</tr>
+<tr>
+<td><code>encode(text)</code></td>
+<td>Neue Texte mit den bereits gelernten Regeln codieren</td>
+<td>Es werden keine neuen Regeln gelernt.</td>
+</tr>
+<tr>
+<td><code>decode(ids)</code></td>
+<td>Bytefolgen verbinden und einmal als UTF-8 decodieren</td>
+<td>Text aus <code>encode</code> wird exakt wiederhergestellt.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Wähle anfangs <code>num_merges=10</code> oder 20 und drucke jede Regel aus. So kannst du nachvollziehen, was dein Code tut.</p>
+<h3 id="c-den-trainingsalgorithmus-festlegen">9C Den Trainingsalgorithmus festlegen</h3>
+<ol>
+<li>Wandle jedes <strong>Trainingsdokument</strong> separat mit <code>text.encode(&quot;utf-8&quot;)</code> in Byte-IDs um.</li>
+<li>Lege für IDs 0 bis 255 die Bedeutung als jeweiliges einzelnes Byte fest.</li>
+<li>Zähle benachbarte Paare innerhalb der Dokumente. Zähle kein Paar über eine Dokumentgrenze hinweg.</li>
+<li>Wähle das häufigste Paar anhand deiner festen Gleichstandsregel.</li>
+<li>Vergib eine neue ID und speichere sowohl die Regel als auch deren Position in der Reihenfolge, den <strong>Merge-Rang</strong>.</li>
+<li>Ersetze dieses Paar in allen Trainingsdokumenten links nach rechts ohne überlappende Ersetzungen.</li>
+<li>Wiederhole die Schritte bis zur gewählten Zahl von Merges oder bis kein Paar mehr vorhanden ist. Du kannst auch ausdrücklich festlegen, bei Häufigkeit kleiner als 2 zu stoppen.</li>
+</ol>
+<p>Bei <code>[a,a,a,a]</code> wird das Paar <code>(a,a)</code> beim Zählen an drei benachbarten Positionen gefunden. Eine nicht überlappende Ersetzung ergibt trotzdem nur <code>[aa,aa]</code>. Zählen und Ersetzen haben hier unterschiedliche Aufgaben; dafür brauchst du einen eigenen Test.</p>
+<p>Diese einfachste Variante darf innerhalb eines Dokuments auch über Leerzeichen hinweg zusammenführen. Das ist eine bewusste Designentscheidung. Eine spätere Vorzerlegung in Wörter oder Textabschnitte verändert das Verfahren und muss bei Training und <code>encode</code> gleich sein.</p>
+<h3 id="d-neue-texte-richtig-codieren">9D Neue Texte richtig codieren</h3>
+<p>Beginne wieder mit den UTF-8-Bytes des neuen Textes. Wende die <strong>gespeicherten</strong> Regeln in ihrer gelernten Reihenfolge an, jeweils mit derselben nicht überlappenden Ersetzung. Das ist eine leicht nachvollziehbare erste Encoder-Implementierung. Eine spätere effizientere Variante sucht jeweils das vorhandene Paar mit dem kleinsten Merge-Rang.</p>
+<p>Du zählst auf dem neuen Text nicht nochmals frei die häufigsten Paare und lernst den Tokenizer nicht bei jedem Aufruf neu. Sonst würden dieselben IDs je nach Text etwas anderes bedeuten. Trainiere die Regeln auch nicht mit Validierungstexten.</p>
+<p>Weil alle 256 Bytes im Anfangsvokabular enthalten bleiben, kann dein Encoder auch unbekannte Wörter und gültige UTF-8-Zeichen darstellen. Häufige Folgen sind kürzer codiert, andere bleiben mehrere einzelne Bytes. Zur Decodierung verbindest du zuerst alle Token-Bytefolgen und decodierst dann die gesamte Bytefolge. Ein BPE-Token muss allein kein vollständiges Unicode-Zeichen ergeben.</p>
+<h3 id="e-regeln-dauerhaft-speichern">9E Regeln dauerhaft speichern</h3>
+<p>Speichere in einem klaren Format, beispielsweise JSON:</p>
+<ul>
+<li>Formatversion und die Festlegung «UTF-8, Basis-IDs 0 bis 255».</li>
+<li>Geordnete Liste der Merges mit linker ID, rechter ID und neuer ID.</li>
+<li>Token-Bedeutungen als Listen von Bytewerten oder eine eindeutig rekonstruierbare Merge-Tabelle.</li>
+<li>Gewählte Anzahl Merges, tatsächlich erzeugte Anzahl und Gleichstandsregel.</li>
+<li>Sondertoken-IDs und deren gesonderte Behandlung, falls du welche einführst.</li>
+<li>Kennung der Trainingsdaten und der Bereinigung.</li>
+</ul>
+<p>Für die erste Version brauchst du keine Sondertokens. Wenn du nach <code>M</code> tatsächlich erzeugten Merges ein End-Token hinzufügst, kannst du ihm ID <code>256 + M</code> geben. Die Gesamtgrösse ist dann <code>257 + M</code>. Dieses End-Token hat keine normale Bytebedeutung und wird bei der Textdecodierung nach deiner ausdrücklich gewählten Regel behandelt. Seine ID darf mit keinem Merge kollidieren.</p>
+<h3 id="f-prufen-und-mit-dem-modell-verbinden">9F Prüfen und mit dem Modell verbinden</h3>
+<p>Prüfe zuerst Wiederherstellung, deterministische Regeln, überlappende Paare, leeren Text, neue Wörter, Umlaute und Emoji. Nach Speichern und Laden müssen sowohl die IDs als auch die decodierten Texte übereinstimmen. Das gesamte Vokabular muss bekannt sein, einschliesslich reservierter Sondertokens.</p>
+<p>Miss dann auf Training <strong>und</strong> Validierung, wie viele Tokens derselbe Text benötigt. Ein einfaches Mass ist <code>Anzahl UTF-8-Bytes / Anzahl BPE-Tokens</code>: Ein grösserer Wert bedeutet mehr Bytes je Token. Behandle leere Texte separat, damit du nicht durch null teilst. Eine bessere Kompression beweist noch keine bessere Sprachmodellqualität; ein grösseres Vokabular vergrössert auch Embedding und Ausgabeschicht.</p>
+<p>Wenn du den Tokenizer wechselst, tokenisierst du die Daten neu und passt die Modell-Vokabulargrösse an. Trainiere für den ersten Vergleich ein frisches Modell. Alte Gewichte lassen sich bei veränderter Tokenbedeutung nicht einfach passend umdeuten.</p>
+<p><strong>Typische Fehler:</strong> Paarzahlen nach einem Merge nicht neu berechnen; überlappende Ersetzungen; Regeln in einer ungeordneten Datenstruktur verlieren; Wörter beim Decodieren mit zusätzlichen Leerzeichen verbinden; Bytefolgen zu früh decodieren. Prüfe dafür kurze Listen, die du von Hand berechnen kannst.</p>
+<p><strong>Weiter, wenn:</strong> Du kannst die ersten Merges erklären, beliebige gültige Testtexte verlustfrei codieren und mit einem erneut geladenen Tokenizer dieselben IDs erzeugen.</p>
+<h2 id="phase-10-speicher-und-architektur-gezielt-erweitern">Phase 10 Speicher und Architektur gezielt erweitern</h2>
+<p><strong>Ziel:</strong> Eine konkrete Grenze oder Forschungsfrage untersuchen. <strong>Vorwissen:</strong> Ein getesteter kleiner Transformer, eine dokumentierte Datenaufteilung und ein funktionierender Ausgangslauf. <strong>Ablage:</strong> Je nach Änderung die vorhandenen Modelldateien, <code>data/dataset.py</code>, <code>training/sft.py</code>, <code>scripts/finetune.py</code> oder <code>app/app.py</code>; Vergleiche in <code>experiments/ablations/</code> und <code>experiments/results/</code>.</p>
+<p><strong>Mindestziel:</strong> Du darfst nach dem kleinen Modell zunächst aufhören und dein Ergebnis auswerten. Eine Erweiterung ist für diese Etappe optional. <strong>Später möglich:</strong> Genau eine Änderung auswählen, begründen und gegen den Ausgangszustand prüfen.</p>
+<h3 id="wann-numpy.memmap-nutzlich-wird">Wann numpy.memmap nützlich wird</h3>
+<p>Der Arbeitsspeicher des Computers, <strong>RAM</strong>, hält deine Python-Daten. Der Grafikspeicher, <strong>VRAM</strong>, hält auf einer gewöhnlichen separaten GPU Modell und gerade benötigte Rechendaten. Ein grosser Gesamtdatensatz muss nicht vollständig in den VRAM passen; normalerweise überträgst du nur den nächsten Batch.</p>
+<p>Für einige Tausend oder Millionen Tokens ist ein gewöhnliches Array oft einfach genug. <code>numpy.memmap</code> wird interessant, wenn das vollständige Token-Array nicht mehr bequem in den RAM passt oder wenn viele Starts und mehrere Prozesse eine grosse Datei gezielt lesen sollen. Es erlaubt den Zugriff auf Ausschnitte einer Datei, ohne zunächst alles einzulesen. Der tatsächlich genutzte Speicher hängt auch vom Betriebssystem-Cache und Zugriffsmuster ab. <a href="https://numpy.org/doc/stable/reference/generated/numpy.memmap.html">NumPy memmap</a>.</p>
+<p>Die unkomplizierte Zwischenstufe ist eine <code>.npy</code>-Datei:</p>
+<pre><code class="language-python"># Ausschnitt: ids_array ist dein bereits erzeugtes NumPy-Array.
+import numpy as np
+
+np.save(token_file, ids_array)
+loaded = np.load(token_file, mmap_mode=&quot;r&quot;)
+small_window = loaded[100:133]
+</code></pre>
+<p><code>.npy</code> speichert Datentyp und Form mit. Ein rohes <code>.bin</code> für <code>np.memmap</code> braucht diese Angaben zusätzlich, inklusive Byte-Reihenfolge und Dateiformat. Falsche Metadaten können scheinbar lesbare, aber falsche IDs ergeben.</p>
+<p>Wähle den Datentyp nach der <strong>höchsten tatsächlich möglichen ID</strong>: <code>uint16</code> reicht für IDs 0 bis 65535, einschliesslich aller Sondertokens. Sonst brauchst du beispielsweise <code>uint32</code>. Prüfe den Wertebereich <strong>vor</strong> einer Umwandlung; ein zu kleiner Datentyp kann Werte verändern. Für Embedding und Cross-Entropy wandelst du den jeweiligen Batch in <code>torch.long</code> um. Wenn du eine schreibgeschützte Memmap verwendest, erstelle für den kleinen Batch eine eigene Kopie, bevor du ihn als veränderbaren PyTorch-Tensor nutzt.</p>
+<p>Zur Grössenordnung: 100 Millionen IDs belegen als <code>uint16</code> ungefähr 200 Millionen Bytes, als <code>uint32</code> ungefähr 400 Millionen Bytes, jeweils ohne weitere Dateistrukturen. Das ist eine Speicherrechnung, keine Empfehlung für deinen ersten Datensatz.</p>
+<p><strong>Prüfung:</strong> Vergleiche Anfang, Ende und zufällige Fenster mit dem ursprünglichen Array, prüfe Tokenanzahl, Dateiformat und maximale ID. Miss danach, ob das Laden wirklich zum Engpass wird. <strong>Typische Fehler:</strong> Rohdatei mit falschem Datentyp lesen, gleichzeitig dieselbe Datei schreiben und trainieren, den gesamten Memmap-Inhalt doch wieder kopieren. <strong>Weiter, wenn:</strong> Deine Batches unverändert sind und der neue Ablauf den tatsächlichen Speicher- oder Ladebedarf verbessert. Memmap beschleunigt nicht automatisch die Modellrechnung und vergrössert nicht den VRAM.</p>
+<h3 id="mogliche-anderungen-mit-einer-klaren-pruffrage">Mögliche Änderungen mit einer klaren Prüffrage</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Erweiterung</th>
+<th>Was sich verändert</th>
+<th>Was du vorher lernen solltest</th>
+<th>Klein anfangen und prüfen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RMSNorm</td>
+<td>Normiert anhand der mittleren quadrierten Grössen ohne Mittelwert-Abzug</td>
+<td>Mittelwert, Quadratwurzel und letzte Tensorachse</td>
+<td>Eigene Funktion an einem kleinen Vektor durchrechnen und bei <code>eps &gt; 0</code> auf endliche Ausgaben prüfen. Dann gleiche Trainingsaufgabe vergleichen.</td>
+</tr>
+<tr>
+<td>RoPE</td>
+<td>Positionsinformation wird durch Drehungen von Q und K eingebracht</td>
+<td>Paarweise Koordinaten, Sinus und Cosinus</td>
+<td>Zwei Zahlenpaare bei Position 0 und 1 prüfen; gerade Kopfbreite und konsistente Positionen sicherstellen. Danach die bisherigen Positions-Embeddings im geplanten Vergleich ersetzen.</td>
+</tr>
+<tr>
+<td>GQA</td>
+<td>Mehrere Query-Köpfe teilen sich Key- und Value-Köpfe</td>
+<td>Multi-Head-Achsen und deren Zuordnung</td>
+<td>Zuerst gleich viele Q- und KV-Köpfe wie bisher; danach beispielsweise 4 Q- und 2 KV-Köpfe. Prüfe Teilbarkeit und Gleichheit der Ausgangsvariante.</td>
+</tr>
+<tr>
+<td>SwiGLU</td>
+<td>Ein Zweig steuert einen anderen im Feedforward-Netz durch elementweises Multiplizieren</td>
+<td>Lineare Schichten und SiLU-Aktivierung</td>
+<td>Form jeder Projektion prüfen; Parameterzahl gegenüber dem alten Feedforward-Netz mit angeben.</td>
+</tr>
+<tr>
+<td>Grösseres Modell</td>
+<td>Mehr lernbare Kapazität und höherer Speicherbedarf</td>
+<td>Laufzeit- und Speichermessung</td>
+<td>Nur eine Grössenachse erhöhen und einen kurzen vollständigen Trainingsversuch messen.</td>
+</tr>
+<tr>
+<td>SFT</td>
+<td>Das Modell lernt aus Beispielen gewünschter Eingaben und Antworten</td>
+<td>Datenformat, Spezialtokens, maskierter Loss und getrennte Auswertung</td>
+<td>Einige selbst geschriebene Frage-Antwort-Paare prüfen; nur die vorgesehenen Antwort-Zielpositionen bewerten.</td>
+</tr>
+<tr>
+<td>Lokale Oberfläche</td>
+<td>Du kannst das trainierte Modell bequem ausprobieren</td>
+<td>Laden, Generierung und Abbruchbedingungen</td>
+<td>Erst eine lokale Eingabe mit Maximalzahl neuer Tokens; prüfen, dass wirklich dein gespeichertes Modell und dein Tokenizer geladen werden.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Die Details dieser Architekturideen findest du in den jeweiligen Originalarbeiten: <a href="https://arxiv.org/abs/1910.07467">RMSNorm</a>, <a href="https://arxiv.org/abs/2104.09864">RoPE</a>, <a href="https://arxiv.org/abs/2305.13245">GQA</a> und <a href="https://arxiv.org/abs/2002.05202">GLU-Varianten mit SwiGLU</a>. Du musst diese Arbeiten heute noch nicht vollständig lesen.</p>
+<p>GQA spart insbesondere beim späteren <strong>KV-Cache</strong>: Dieser speichert bereits berechnete Keys und Values während der schrittweisen Generierung. Eine tatsächliche Beschleunigung hängt auch von der Umsetzung und Hardware ab. Einen solchen Cache brauchst du für die erste Generierung noch nicht.</p>
+<p><strong>Supervised Fine-Tuning</strong> ist weiterhin ein Nächstes-Token-Training, nun an vorgegebenen Beispielen gewünschten Verhaltens. Wenn du nur Antwortteile bewerten möchtest, setzt du die übrigen Zielpositionen auf den von deiner Loss-Funktion ignorierten Wert, beispielsweise <code>-100</code>. Prompt-Tokens bleiben als Eingabe sichtbar. Prüfe die Zuordnung nach der Zielverschiebung, besonders den ersten Antworttoken und das Antwortende. Padding muss ebenfalls korrekt aus dem Loss entfernt werden; je nach Packstrategie brauchst du zusätzlich eine passende Attention-Maske. Ein Batch darf nicht ausschliesslich ignorierte Ziele enthalten.</p>
+<p>Ein wenig SFT kann ein sehr schwaches Grundmodell nicht in einen zuverlässigen Assistenten verwandeln. Eine Oberfläche macht seine vorhandenen Fähigkeiten zugänglich; sie ersetzt keine Auswertung.</p>
+<p>Für jeden Vergleich notierst du: <strong>Fragestellung, genau eine geplante Änderung, Daten und Tokenizer, Parameterzahl, Trainingsbudget, Ergebnis und Unsicherheit.</strong> Gleiche Trainingsschritte allein bedeuten bei unterschiedlichen Batchgrössen nicht gleich viele gesehene Tokens. Bei knappen Ressourcen reicht ein kleiner sauber beschriebener Vergleich; bei schwankenden Ergebnissen sind später mehrere Seeds hilfreich.</p>
+<p><strong>Weiter, wenn:</strong> Du kannst sagen, welche konkrete Beobachtung für oder gegen die Änderung spricht. Eine bessere Zahl in einem einzelnen Lauf ist noch kein allgemeiner Beweis, dass ein Baustein immer überlegen ist.</p>
+<h2 id="tests-und-fehlersuche-als-teil-deiner-arbeit">Tests und Fehlersuche als Teil deiner Arbeit</h2>
+<p>Ein Test ist eine kleine Behauptung über das erwartete Verhalten. Mit <code>assert</code> hältst du diese Behauptung fest. Mit <code>pytest</code> kannst du viele solche Prüfungen automatisch ausführen. Beginne mit wenigen besonders aussagekräftigen Tests und ergänze neue, wenn du einen Baustein hinzufügst oder einen Fehler gefunden hast.</p>
+<h3 id="die-wichtigsten-prufungen">Die wichtigsten Prüfungen</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Prüfung</th>
+<th>Erwartung</th>
+<th>Was ein Fehlschlag bedeuten könnte</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tokenizer-Rundreise</td>
+<td><code>decode(encode(text)) == text</code></td>
+<td>Leerzeichen verloren, falsche Merge-Reihenfolge, defekte Bytebehandlung oder veränderte Normalisierung.</td>
+</tr>
+<tr>
+<td>Tokenizer speichern und laden</td>
+<td>Genau gleiche IDs für denselben Text</td>
+<td>Tabelle oder Regelreihenfolge wurde nicht vollständig gespeichert.</td>
+</tr>
+<tr>
+<td>Zielverschiebung</td>
+<td>Jedes <code>y[t]</code> ist das nach <code>x[t]</code> folgende Token</td>
+<td>Um eins verrutschter Ausschnitt, doppeltes Verschieben oder Grenzfehler.</td>
+</tr>
+<tr>
+<td>Tensorformen</td>
+<td>Eingabe <code>(B,T)</code>, Ausgabe <code>(B,T,V)</code></td>
+<td>Achsen vertauscht, Köpfe falsch zusammengefügt oder Vokabulargrösse verwechselt.</td>
+</tr>
+<tr>
+<td>Attention-Gewichte</td>
+<td>Summe je Zeile 1 und rechts der Diagonale 0</td>
+<td>Falsche Softmax-Achse oder falsche Maske.</td>
+</tr>
+<tr>
+<td>Kausalität des ganzen Modells</td>
+<td>Zukünftige Eingabe verändert frühere Logits nicht</td>
+<td>Attention-Leck oder ein anderer Baustein vermischt Zeitpositionen unerlaubt.</td>
+</tr>
+<tr>
+<td>Lernfähigkeit</td>
+<td>Loss auf einem eindeutigen Minibeispiel sinkt deutlich</td>
+<td>Parameterupdates, Gradienten, Daten oder Lernrate stimmen nicht.</td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td>Logits nach dem Laden stimmen überein</td>
+<td>Falsche Architektur, Gewichte, Tokenizer oder unterschiedlicher Modus.</td>
+</tr>
+<tr>
+<td>Fortsetzung</td>
+<td>Ein weiterer Schritt ist möglich; unter kontrollierten Bedingungen entspricht er dem ununterbrochenen Schritt</td>
+<td>Optimierer, Zufallszustände, Scheduler oder nächste Datenposition fehlen.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="einen-aussagekraftigen-kausalitatstest-schreiben">Einen aussagekräftigen Kausalitätstest schreiben</h3>
+<p>Der Test verwendet dein fertiges Modell auf der CPU, eine Kontextlänge von mindestens 8 und ein Vokabular mit mindestens zwei Tokens. Er ist ein Muster für <code>tests/test_model.py</code>; die Erzeugung des passenden <code>model</code> ergänzt du selbst.</p>
+<pre><code class="language-python">import torch
+
+model.eval()
+torch.manual_seed(12)
+vocab_size = 256
+x = torch.randint(0, vocab_size, (2, 8))
+changed = x.clone()
+changed[:, 4:] = (changed[:, 4:] + 1) % vocab_size
+
+with torch.no_grad():
+    original_logits = model(x)
+    changed_logits = model(changed)
+
+torch.testing.assert_close(
+    original_logits[:, :4],
+    changed_logits[:, :4],
+    rtol=1e-5,
+    atol=1e-6,
+)
+</code></pre>
+<p>Passe <code>vocab_size</code> an deine Konfiguration an. Die ersten vier Eingabe-Tokens bleiben gleich, alle späteren werden verändert. Die Logits an Position 0 bis 3 müssen trotzdem gleich bleiben. Auch Position 3, die Token 4 <strong>vorhersagt</strong>, darf das tatsächliche Eingabetoken an Position 4 nicht sehen.</p>
+<p>Verwende <code>eval()</code>, damit Dropout den Vergleich nicht zufällig verändert. Prüfe mehrere Eingaben und Grenzpositionen. Ergänze einen Vergleich zwischen einem kurzen Präfix allein und demselben Präfix am Anfang einer längeren Eingabe. Ein Modell ohne Attention könnte den Kausalitätstest ebenfalls bestehen; zusammen mit dem direkten Maskentest und dem Lernversuch wird die Prüfung aussagekräftiger.</p>
+<h3 id="einen-checkpoint-wirklich-testen">Einen Checkpoint wirklich testen</h3>
+<ol>
+<li>Trainiere ein paar kleine Schritte und wähle eine feste Eingabe.</li>
+<li>Berechne deren Logits in <code>eval()</code> und speichere den Trainingsstand.</li>
+<li>Erzeuge ein neues Modell und einen neuen Optimierer; lade den Stand.</li>
+<li>Vergleiche die Logits auf demselben Gerät mit <code>assert_close</code>.</li>
+<li>Führe einen weiteren Schritt aus und prüfe endlichen Loss und veränderte Gewichte.</li>
+<li>Als spätere strengere Prüfung: Vergleiche «speichern, laden, nächster fester Batch» mit «ohne Unterbruch derselbe nächste Batch». Verwende zunächst CPU, Dropout 0 und identische Einstellungen. Für stochastische Abläufe musst du zusätzlich Zufallszustände wiederherstellen.</li>
+</ol>
+<h3 id="tests-praktisch-starten">Tests praktisch starten</h3>
+<p>Eine Testdatei enthält beispielsweise Funktionen mit Namen wie <code>test_byte_roundtrip</code>. Beim ersten Aufbau kannst du viele Prüfungen noch direkt im Lernskript mit <code>assert</code> durchführen.</p>
+<pre><code class="language-powershell">Set-Location -LiteralPath 'C:\Users\wunde\MintCLM\MintCLM 1.0'
+$env:PYTHONPATH = (Join-Path (Get-Location) 'src')
+python -m pytest tests/test_tokenizer.py
+</code></pre>
+<p>Die <code>PYTHONPATH</code>-Zeile macht dein <code>src</code>-Paket für diese Konsole auffindbar. Sie ist ein einfacher Übergang für die vorhandene Struktur. Für <code>pip install -e .</code> braucht das Projekt später erst eine passende Paketkonfiguration wie <code>pyproject.toml</code>. Die bislang leeren Testdateien enthalten noch keine Prüfungen; «keine Tests gefunden» ist deshalb kein Nachweis korrekter Funktionen. Führe jeweils die Tests aus, die du bereits umgesetzt hast.</p>
+<p>Wenn etwas fehlschlägt, verkleinere auf <strong>ein Beispiel, einen Block und die CPU</strong>. Drucke Formen, Datentypen, Geräte, minimale und maximale IDs sowie den ersten fehlerhaften Zwischenschritt. Lies die eigentliche Fehlermeldung am Ende der Ausgabe und suche dann die erste Stelle in deinem eigenen Code. Ändere jeweils nur eine Vermutung und notiere, was sich dadurch verändert hat.</p>
+<p>Nach einem GPU-Fehler kann der laufende Prozess in einem unbrauchbaren Zustand sein. Starte ihn für einen sauberen erneuten Versuch neu. Hebe eine kleine Eingabe auf, die den Fehler zuverlässig reproduziert; das ist oft hilfreicher als eine grosse Menge zusätzlicher Protokolle.</p>
+<h2 id="zeit-und-hardware-realistisch-planen">Zeit und Hardware realistisch planen</h2>
+<h3 id="ein-flexibler-plan-fur-drei-bis-sechs-monate">Ein flexibler Plan für drei bis sechs Monate</h3>
+<p><strong>Planungsannahme:</strong> Im Durchschnitt stehen dir etwa drei bis fünf aktive Projektstunden pro Woche zur Verfügung. Du kannst sie beispielsweise auf eine längere und zwei kurze Sitzungen verteilen. Das ist eine Annahme zum Planen, keine Erwartung an dich. Installation, Fehlersuche und Schulwochen können unterschiedlich viel Zeit beanspruchen.</p>
+<p>Ein möglicher roter Faden über ungefähr 20 Wochen:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Zeitraum</th>
+<th>Schwerpunkt</th>
+<th>Sichtbares Ergebnis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Woche 1</td>
+<td>Einrichtung und erster Textversuch</td>
+<td>Ein Skript läuft; Text wird in IDs und zurück verwandelt.</td>
+</tr>
+<tr>
+<td>Wochen 2 bis 4</td>
+<td>NumPy, Tensoren und Gradienten</td>
+<td>Kleine selbst erklärte Übungen und ein lernender Zahlenparameter.</td>
+</tr>
+<tr>
+<td>Wochen 5 bis 6</td>
+<td>Kleine Daten, Aufteilung, Tokenizer und Fenster</td>
+<td>Ein geprüfter Datensatz mit getrennten Teilen.</td>
+</tr>
+<tr>
+<td>Woche 7</td>
+<td>Bigram-Modell</td>
+<td>Ein einfaches Muster wird gelernt und fortgesetzt.</td>
+</tr>
+<tr>
+<td>Wochen 8 bis 11</td>
+<td>Eigene Attention und Transformer</td>
+<td>Formen und Kausalität sind geprüft.</td>
+</tr>
+<tr>
+<td>Wochen 12 bis 14</td>
+<td>Kurze Trainingsläufe und Validierung</td>
+<td>Lernkurven oder Tabellen, feste Textproben und Checkpoints.</td>
+</tr>
+<tr>
+<td>Wochen 15 bis 16</td>
+<td>Laden, Auswertung und offene Fehler</td>
+<td>Ein anderer Programmstart kann den Stand weiterverwenden.</td>
+</tr>
+<tr>
+<td>Wochen 17 bis 18</td>
+<td>Optional BPE oder eine andere einzelne Frage</td>
+<td>Ein eigener Tokenizer oder ein sauber begrenzter Vergleich.</td>
+</tr>
+<tr>
+<td>Wochen 19 bis 20</td>
+<td>Ergebnisse erklären und dokumentieren</td>
+<td>Nachvollziehbarer Projektbericht mit Grenzen und nächsten Ideen.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Journal und kurze Zusammenfassungen schreibst du während der ganzen Zeit. Die letzten Wochen sind zum Ordnen und Erklären gedacht; die Dokumentation beginnt nicht erst dann.</p>
+<p>Bei etwa zwei bis drei Stunden pro Woche kannst du die Lernphasen über sechs Monate verteilen und Erweiterungen weglassen. Bei mehr Zeit kannst du manche Phasen zusammenziehen und in ungefähr drei Monaten einen kleinen vollständigen Ablauf erreichen. Verdopple nicht automatisch Modell oder Daten, nur weil du schneller vorankommst.</p>
+<p>Plane nach jeder zwei- bis dreiwöchigen Etappe eine Entscheidung: <strong>Verstehe ich genug, macht mir die Arbeit noch Freude und was möchte ich als Nächstes untersuchen?</strong> Wenn du langsamer vorankommst, verkleinere zuerst den Umfang. Ein gut erklärter kleiner Transformer ist ein klarer möglicher Abschluss. BPE, SFT und eine Oberfläche können getrennte spätere Etappen bleiben.</p>
+<h3 id="die-gerate-nach-dem-konkreten-versuch-auswahlen">Die Geräte nach dem konkreten Versuch auswählen</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Gerät</th>
+<th>Sinnvoller möglicher Einsatz</th>
+<th>Vorher klären</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Laptop mit RTX 5060</td>
+<td>Entwicklung, Tests und erste kleine Trainingsläufe</td>
+<td>Freier Grafikspeicher, funktionierender PyTorch-Build, Verhalten bei längerem Lauf.</td>
+</tr>
+<tr>
+<td>Workstation mit RTX PRO 5000</td>
+<td>Längere oder grössere Versuche nach einem erfolgreichen Pilotlauf</td>
+<td>Exakte GPU-Ausführung, Speicher, Betriebssystem, Zugang und verfügbare Zeit.</td>
+</tr>
+<tr>
+<td>DGX Spark mit 128 GB gemeinsamem Speicher</td>
+<td>Versuche, für die mehr gemeinsam nutzbarer Speicher interessant ist</td>
+<td>ARM64-Umgebung, tatsächlich verfügbarer Speicher, Container und gemessene Geschwindigkeit.</td>
+</tr>
+<tr>
+<td>Eventuelle H200</td>
+<td>Spätere Versuche bei tatsächlich verfügbarem Zugang</td>
+<td>Konkrete Ausstattung, Laufzeitfenster, Umgebung und Datenübertragung.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Es gibt hier bewusst keine behauptete Trainingsgeschwindigkeit für diese Geräte. Der Name einer GPU allein sagt nicht, wie schnell <strong>dein</strong> Programm läuft. Nutzungszeiten und Gerätekonfigurationen sind noch offen.</p>
+<p><strong>Speicherkapazität</strong> beantwortet: Passt der geplante Versuch hinein? <strong>Geschwindigkeit</strong> beantwortet: Wie lange dauert er? Dazu tragen unter anderem Rechenleistung, Speicherbandbreite, Datenladen, Zahlenformat und die verwendeten Rechenverfahren bei. Ein Gerät mit mehr Speicher ist deshalb nicht automatisch bei jedem kleinen Modell schneller.</p>
+<p>Die 128 GB des DGX Spark werden zwischen CPU, GPU und weiteren Systemaufgaben geteilt. Es ist kein zusätzlich zum übrigen Arbeitsspeicher exklusiv verfügbarer VRAM-Pool. Ebenso sind Werbeangaben zur Ausführung grosser quantisierter Modelle keine Zusage, dass dieselbe Parameterzahl vollständig trainierbar ist. Vollständiges Training benötigt weitere Zustände und Zwischenergebnisse. <a href="https://docs.nvidia.com/dgx/dgx-spark/hardware.html">NVIDIA-Hardwareübersicht</a>.</p>
+<h3 id="speicherbedarf-grob-verstehen">Speicherbedarf grob verstehen</h3>
+<p>Für einen einfachen AdamW-Lauf mit float32 kannst du als erste Rechnung ungefähr <strong>16 Bytes pro Parameter</strong> ansetzen: 4 für das Gewicht, 4 für den Gradienten und 8 für die beiden Adam-Zustände. Dazu kommen Aktivierungen, temporäre Rechenfelder, Daten und weitere Verwaltungsanteile. Diese Rechnung ist eine grobe Ausgangsbasis, kein vollständiges Speicherbudget.</p>
+<p>Die <strong>Aktivierungen</strong> sind Zwischenergebnisse, die beim Rückwärtsrechnen gebraucht werden. Sie hängen stark von Batchgrösse und Kontextlänge ab. Deine einfache selbst implementierte Attention bildet ein Feld <code>(B,H,T,T)</code>; bei doppeltem <code>T</code> enthält dieses viermal so viele Einträge. Optimierte Attention-Verfahren können mit weniger gespeicherten Zwischenfeldern auskommen. Deshalb muss der Speicherbedarf mit der tatsächlichen Implementierung gemessen werden.</p>
+<p>Bei einem Speicherfehler verkleinerst du zuerst Batchgrösse und gegebenenfalls Kontext. Gradient Accumulation kann später die gewünschte effektive Batchgrösse erhalten. Ein grösserer Datensatz auf der SSD allein verursacht noch keinen entsprechend grösseren VRAM-Bedarf, wenn nur einzelne Batches übertragen werden.</p>
+<h3 id="einen-kleinen-vollstandigen-pilotlauf-messen">Einen kleinen vollständigen Pilotlauf messen</h3>
+<p>Miss auf jedem Gerät dieselbe klar beschriebene Konfiguration. Ein Vorwärtslauf allein ist für eine Trainingsabschätzung zu wenig: Rückwärtslauf und Optimiererschritt gehören dazu. Verwende auch dasselbe Zahlenformat und dieselbe Art des Datenladens wie im geplanten Lauf.</p>
+<ol>
+<li>Wähle Modell, <code>B</code>, <code>T</code>, Tokenizer, Optimierer und Zahlenformat.</li>
+<li>Führe etwa 10 bis 20 vollständige Updates als Aufwärmphase aus. Adam-Zustände und gegebenenfalls Kompilierung werden dabei angelegt.</li>
+<li>Miss anschliessend beispielsweise 50 bis 100 vollständige Updates. Falls die Messung extrem kurz ist, wähle mehr Updates.</li>
+<li>Synchronisiere die GPU vor Start und Ende der Zeitmessung. GPU-Aufträge werden sonst häufig nur eingereiht, und die gemessene Zeit wäre irreführend. <a href="https://docs.pytorch.org/docs/stable/notes/cuda.html">PyTorch zu asynchroner CUDA-Ausführung</a>.</li>
+<li>Notiere Zeit, Zahl der verarbeiteten Ziel-Tokens und maximalen Speicherbedarf. Prüfe zusätzlich die gesamte Gerätebelegung, etwa mit <code>nvidia-smi</code>.</li>
+</ol>
+<p>Dieses <strong>Messmuster</strong> setzt voraus, dass <code>get_train_batch()</code> einen Batch liefert, <code>train_step(x, y)</code> genau ein vollständiges Update ausführt und <code>device</code>, <code>B</code> sowie <code>T</code> deine echten Einstellungen enthalten. Es verwendet feste Fenster ohne Padding und ohne Gradient Accumulation:</p>
+<pre><code class="language-python">import time
+import torch
+
+use_cuda = device.type == &quot;cuda&quot;
+for _ in range(10):
+    x, y = get_train_batch()
+    train_step(x, y)
+
+if use_cuda:
+    torch.cuda.synchronize(device)
+    torch.cuda.reset_peak_memory_stats(device)
+
+steps = 50
+start = time.perf_counter()
+for _ in range(steps):
+    x, y = get_train_batch()
+    train_step(x, y)
+if use_cuda:
+    torch.cuda.synchronize(device)
+
+seconds = time.perf_counter() - start
+targets = steps * B * T
+print(&quot;Sekunden pro Update:&quot;, seconds / steps)
+print(&quot;Ziel-Tokens pro Sekunde:&quot;, targets / seconds)
+if use_cuda:
+    print(&quot;Peak belegte GiB:&quot;, torch.cuda.max_memory_allocated(device) / 2**30)
+    print(&quot;Peak reservierte GiB:&quot;, torch.cuda.max_memory_reserved(device) / 2**30)
+</code></pre>
+<p>PyTorch kann Speicher zur Wiederverwendung reservieren. <em>Allocated</em>, <em>reserved</em> und die Gesamtbelegung aus <code>nvidia-smi</code> sind deshalb unterschiedliche Werte. Andere Programme und Treiber benötigen ebenfalls Speicher. Auf dem Spark prüfst du zusätzlich die systemweite Belegung des gemeinsamen Speichers.</p>
+<p>Bei <code>K</code> Teilbatches pro Update und sonst gleichen festen Längen lautet die Tokenzahl <code>steps * B * T * K</code>. Bei Padding oder ignorierten Zielen musst du die tatsächlich bewerteten Positionen zählen. Unterscheide dabei die Modellrechnung auf allen Positionen vom Loss auf den nicht ignorierten Positionen.</p>
+<h3 id="von-der-messung-zu-einer-groben-laufzeit">Von der Messung zu einer groben Laufzeit</h3>
+<p>Für ein geplantes <strong>Tokenbudget</strong>, also die gesamte Menge verarbeiteter Ziel-Tokens, gilt näherungsweise:</p>
+<pre><code class="language-text">Trainingszeit = geplante Ziel-Tokens / gemessene Ziel-Tokens pro Sekunde
+</code></pre>
+<p>Oder für eine feste Anzahl Updates: <code>Updates * Sekunden pro Update</code>.</p>
+<p><strong>Reines Rechenbeispiel, keine Messung auf einem deiner Geräte:</strong> Bei angenommenen 1000 Ziel-Tokens pro Sekunde würden 2 Millionen Ziel-Tokens ungefähr 2000 Sekunden, also 33 Minuten und 20 Sekunden reine gemessene Trainingszeit benötigen. Validierung, Speichern, Starten und Unterbrechungen kommen zusätzlich dazu. Bei doppelt so vielen Tokens wäre die Zeit unter denselben Bedingungen ungefähr doppelt so lang.</p>
+<p>Bei zufällig gezogenen Textfenstern ist ein Tokenbudget keine Zusage, dass jeder Datensatz-Token gleich oft gesehen wurde. Eine <strong>Epoche</strong> bezeichnet dagegen normalerweise einen vollständigen Durchgang durch den festgelegten Datensatz. Notiere, welche Zählweise dein Programm verwendet.</p>
+<p>Miss Validierungs- und Speicherintervalle ebenfalls oder plane eine sichtbar als Annahme gekennzeichnete Zeitreserve ein. Wiederhole die Abschätzung nach einer Änderung an Kontextlänge, Modellgrösse, Batch, Präzision oder Attention-Verfahren. Bei einem Laptop kann ein sehr kurzer Lauf das Verhalten unter länger andauernder Last schlecht abbilden; prüfe vor einer grossen Zeitplanung einen etwas längeren kleinen Lauf.</p>
+<h2 id="dein-mint-projekt-dokumentieren">Dein MINT-Projekt dokumentieren</h2>
+<p>Gemäss deiner Beschreibung ist eine <strong>vorgängige Einreichung beim MINT-Team</strong> vorgesehen. Kläre dort früh den vorgesehenen Ablauf und die konkreten Bedingungen. Die folgende Dokumentation ist ein praktischer Vorschlag; sie behauptet keine bestimmten schulischen Pflichtstunden oder Bewertungskriterien.</p>
+<h3 id="eine-uberschaubare-erste-projektbeschreibung">Eine überschaubare erste Projektbeschreibung</h3>
+<p>Halte auf ungefähr einer Seite fest:</p>
+<ul>
+<li><strong>Vorhaben:</strong> Ein kleines eigenes kausales Sprachmodell in Python und PyTorch entwickeln und verstehen.</li>
+<li><strong>Erste Etappe:</strong> Einrichtung, Datenaufbereitung, einfacher Tokenizer, winziges Modell, kurze Lernversuche und dokumentierte Auswertung.</li>
+<li><strong>Eigene Arbeit:</strong> Modellaufbau, Attention, Datenpipeline, später BPE, Tests und Interpretation.</li>
+<li><strong>Werkzeuge:</strong> PyTorch für Tensoren, Autograd und Optimierung; weitere Bibliotheken mit ihren konkreten Aufgaben.</li>
+<li><strong>Offener Umfang:</strong> Erweiterungen werden nach der ersten Etappe und anhand verfügbarer Zeit entschieden.</li>
+<li><strong>Mögliche Leitfrage:</strong> Wie verändert sich die Vorhersagequalität, wenn mein Modell ausser dem letzten Token auch einen längeren Kontext nutzen kann?</li>
+</ul>
+<p>Als spätere Forschungsfrage eignet sich beispielsweise der Vergleich von Byte-Tokenisierung und eigener BPE auf demselben Textmaterial. Damit der Vergleich verständlich bleibt, benennst du Unterschiede bei Vokabular, Parameterzahl, Kontext in Bytes und Trainingsbudget.</p>
+<h3 id="eine-einfache-journalvorlage">Eine einfache Journalvorlage</h3>
+<p>Du kannst ein fortlaufendes <code>docs/project/journal.md</code> anlegen. Ein Eintrag pro Sitzung reicht. Kopiere die folgende Vorlage und fülle sie mit deinen eigenen Worten aus:</p>
+<pre><code class="language-markdown">## Datum und Sitzung
+
+Datum:
+Aktive Arbeitszeit ungefähr:
+Zusätzliche reine Rechnerlaufzeit:
+
+### Mein Ziel für heute
+
+### Was ich gemacht habe
+
+### Was ich verstanden oder neu gelernt habe
+
+Ein Gedanke in meinen eigenen Worten:
+Ein kleines Beispiel dazu:
+
+### Was funktioniert hat
+
+Prüfung oder Beobachtung:
+Ergebnis:
+
+### Probleme und meine Versuche
+
+Fehlermeldung oder Beobachtung:
+Meine Vermutung:
+Was ich verändert habe:
+Was danach passiert ist:
+
+### Verwendete Hilfe
+
+Quellen mit Link und verwendeter Stelle:
+Bibliotheken und gegebenenfalls Versionen:
+KI-Hilfsmittel und wofür ich sie eingesetzt habe:
+Welchen Vorschlag ich selbst geprüft oder verändert habe:
+
+### Nächster kleiner Schritt
+
+### Offene Frage
+</code></pre>
+<p>Ein guter Eintrag darf kurz sein: «Ich dachte, <code>*</code> multipliziere Matrizen. Mein <code>(2,3)</code>-Beispiel zeigte, dass es elementweise rechnet. Mit <code>@</code> und <code>(3,4)</code> erhielt ich <code>(2,4)</code>. Ich kann den Unterschied jetzt an einem Beispiel erklären.» Das dokumentiert eine echte Erkenntnis.</p>
+<p>KI-Unterstützung kannst du konkret beschreiben: «Eine KI erklärte mir die Maskierung. Ich schrieb die Maske selbst und prüfte, dass eine Änderung späterer Tokens die früheren Logits nicht verändert.» Trenne übernommene Vorschläge, eigene Umsetzung und deine Prüfung. Verwende die mit dem MINT-Team vereinbarten Regeln zur Angabe solcher Hilfe.</p>
+<h3 id="zu-jedem-trainingslauf-wenige-feste-angaben-speichern">Zu jedem Trainingslauf wenige feste Angaben speichern</h3>
+<p>Eine kleine Versuchsbeschreibung unter <code>experiments/</code> sollte enthalten: Datum, Fragestellung, Codezustand oder Git-Commit, Datenkennung und Aufteilung, Tokenizerkennung, Konfiguration und Parameterzahl, Seed, Gerät und Softwareversionen, verarbeitete Tokens, Zeit, Speicher, Loss-Werte sowie einige feste Textproben. Logs und grosse Checkpoints bleiben im lokalen Arbeitsordner; in der Beschreibung steht, wie du sie wiederfindest.</p>
+<p>In <code>docs/project/decisions.md</code> hältst du Entscheidungen fest, zum Beispiel «BPE verschoben, damit ich zuerst den Trainingsablauf prüfen kann». In <code>research_questions.md</code> sammelst du Fragen. Ein nicht erfolgreicher Versuch gehört ebenfalls ins Journal, wenn du daraus etwas gelernt oder einen Fehler eingegrenzt hast.</p>
+<h2 id="dein-konkreter-anfang">Dein konkreter Anfang</h2>
+<h3 id="die-ersten-funf-schritte">Die ersten fünf Schritte</h3>
+<ol>
+<li><strong>Schreibe dein erstes Etappenziel auf:</strong> «Ich möchte Text in Zahlen und zurück verwandeln und danach ein winziges Vorhersagemodell verstehen.» Notiere daneben, dass du die vorgängige Einreichung mit dem MINT-Team klärst.</li>
+<li><strong>Prüfe Python und den Treiber:</strong> Öffne eine neue PowerShell, prüfe die Befehle aus Phase 0A und notiere die Ergebnisse. Richte bei Bedarf normales 64-Bit-Python 3.12 über den offiziellen Weg ein.</li>
+<li><strong>Lege die Umgebung ausserhalb von kDrive an:</strong> Verwende den vorgeschlagenen lokalen Ordner, prüfe die Synchronisierungseinstellungen und kontrolliere <code>sys.executable</code>.</li>
+<li><strong>Starte deinen ersten Textversuch:</strong> Erzeuge selbst eine kleine <code>.py</code>-Datei im Ordner <code>notebooks/</code> und setze das Zeichen-Tokenizer-Beispiel aus Phase 3 mit <code>MINT!</code> um. Dafür benötigst du zunächst nur Python.</li>
+<li><strong>Halte das Ergebnis fest und beginne PyTorch:</strong> Schreibe deinen ersten Journaleintrag, installiere danach den geprüften passenden PyTorch-Build und führe den Rechentest aus. Auf der CPU kannst du auch dann weiterlernen, wenn die GPU noch nicht funktioniert.</li>
+</ol>
+<h3 id="deine-erste-arbeitssitzung-ausfuhrlich">Deine erste Arbeitssitzung ausführlich</h3>
+<p><strong>Annahme:</strong> Du hast etwa 60 bis 90 Minuten Zeit. Wenn eine Installation länger braucht, verschiebst du die restlichen Punkte. Der Zweck der Sitzung ist ein verständlicher kleiner Fortschritt.</p>
+<p><strong>Minute 0 bis 10: Orientieren.</strong> Öffne den Projektordner und schaue <code>README.md</code>, <code>notebooks/</code>, <code>src/mintclm/</code> und <code>docs/</code> an. Erkläre dir selbst: In <code>notebooks/</code> darf ich klein ausprobieren, in <code>src/</code> wachsen später wiederverwendbare Bausteine, in <code>tests/</code> prüfe ich Behauptungen und in <code>docs/</code> halte ich Erkenntnisse fest. Lege dein Journal an und notiere eine Frage, die dich interessiert.</p>
+<p><strong>Minute 10 bis 30: Python prüfen und eine Umgebung anlegen.</strong> Folge Phase 0A bis 0C. Kontrolliere den Interpreterpfad. Eine Umgebung ist erst dann sinnvoll eingerichtet, wenn du weisst, welches Python dein Editor und deine Konsole tatsächlich verwenden. Falls Python bereits gut funktioniert, brauchst du diese Zeit möglicherweise nicht vollständig.</p>
+<p><strong>Minute 30 bis 50: Dein erstes Erfolgserlebnis bauen.</strong> Lege <code>notebooks/01_text_und_tokens.py</code> an. Tippe das Beispiel mit <code>MINT!</code> aus Phase 3 selbst ab. Sage vor der Ausführung voraus, wie viele verschiedene Zeichen du hast und wie lang die ID-Liste sein wird. Führe die Datei in der eingerichteten Umgebung aus:</p>
+<pre><code class="language-powershell">python 'C:\Users\wunde\MintCLM\MintCLM 1.0\notebooks\01_text_und_tokens.py'
+</code></pre>
+<p>Prüfe, dass die zurückübersetzte Zeichenfolge <code>MINT!</code> lautet. Ändere den Text danach zu <code>MINT! MINT!</code> und baue die Tabelle erneut auf. Es kommt ein Leerzeichen ins Vokabular; die IDs können sich durch die sortierte Tabelle ändern. Das zeigt, warum du später eine einmal gewählte Tabelle speichern und zusammen mit dem Modell verwenden musst.</p>
+<p><strong>Minute 50 bis 65: Aus Text eine Lernaufgabe machen.</strong> Füge die Idee von <code>ids[:-1]</code> und <code>ids[1:]</code> hinzu, zunächst auch ohne PyTorch. Gib beide Listen und ihre decodierten Texte aus. Für <code>MINT!</code> sollst du <code>MINT</code> und <code>INT!</code> sehen. Erkläre dir laut: «An der Stelle des M soll das Modell das I vorhersagen.» Noch wird nichts gelernt; du hast aber die zentrale Lernaufgabe bereits korrekt vorbereitet.</p>
+<p><strong>Minute 65 bis 80, falls Zeit bleibt: PyTorch ausprobieren.</strong> Installiere die passende Variante aus Phase 0D und starte den Diagnosecode aus Phase 0E. Wenn die Installation länger dauert, ist dies dein nächster Termin. Mache nach erfolgreichem Import zunächst die kleine Gradientenübung aus Phase 1, statt sofort einen Transformer zu schreiben.</p>
+<p><strong>Die letzten 10 Minuten: Festhalten.</strong> Notiere Arbeitszeit, Ergebnis, eine eigene Erklärung und deinen nächsten Schritt. Wenn etwas scheiterte, speichere die konkrete Fehlermeldung und deinen kleinsten Versuch. Beende die Sitzung mit einer kleinen klaren nächsten Aufgabe, etwa «Ich möchte verstehen, weshalb <code>w.grad</code> im Quadrat-Beispiel 4 ist».</p>
+<h3 id="dein-fruhes-erfolgserlebnis">Dein frühes Erfolgserlebnis</h3>
+<p>Dein erster sichtbarer Meilenstein ist: <strong>Du kannst einen eigenen Satz in Zahlen verwandeln und exakt zurückholen.</strong> Der nächste ist: <strong>Du kannst zu jeder Eingabeposition das richtige nächste Zieltoken zeigen.</strong> Danach folgt ein Parameter, der durch Gradienten besser wird. Jeder dieser Schritte ist ein echter Bestandteil deines späteren Sprachmodells.</p>
+<h3 id="fragen-zum-selbstprufen">Fragen zum Selbstprüfen</h3>
+<p>Nach der ersten Sitzung:</p>
+<ol>
+<li>Weshalb verarbeitet das Modell IDs statt direkt sichtbare Buchstaben?</li>
+<li>Warum braucht die Decodierung dieselbe Tabelle wie die Codierung?</li>
+<li>Was bedeuten Eingabe <code>MINT</code> und Ziel <code>INT!</code> an der ersten Position?</li>
+<li>Wo liegen mein Quellcode und meine virtuelle Umgebung, und warum habe ich das so gewählt?</li>
+<li>Welcher konkrete kleine Test zeigt mir, dass meine Umwandlung stimmt?</li>
+</ol>
+<p>Nach den nächsten Etappen:</p>
+<ol start="6">
+<li>Was unterscheidet eine Token-ID von einem lernbaren Parameter?</li>
+<li>Welche Achsen beschreibt <code>(B,T,V)</code>?</li>
+<li>Warum darf Position 3 ihr eigenes Eingabetoken sehen, aber nicht das Token an Position 4?</li>
+<li>Was tun <code>backward()</code> und <code>optimizer.step()</code> jeweils?</li>
+<li>Warum beweist sinkender Trainings-Loss allein noch keine gute Vorhersage auf unbekannten Texten?</li>
+<li>Welche Regeln lernt BPE, und weshalb dürfen diese nicht bei jeder Generierung neu gelernt werden?</li>
+<li>Was brauche ich zusätzlich zu den Gewichten, um ein Training sinnvoll fortzusetzen?</li>
+<li>Warum kann ich aus 128 GB Speicher allein keine Trainingsdauer berechnen?</li>
+<li>Welches Ergebnis meines letzten Versuchs kann ich mit einem Beispiel und einer Prüfung selbst erklären?</li>
+</ol>
+<p>Du musst die späteren Fragen heute noch nicht beantworten können. Verwende sie als Wegmarken: Wenn du einen Begriff mit deinem eigenen kleinen Beispiel erklären kannst, hast du einen tragfähigen nächsten Baustein für MintCLM gewonnen.</p>
+</main></body></html>
