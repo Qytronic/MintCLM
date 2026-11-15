@@ -6,6 +6,13 @@ MintCLM ist ein Lernprojekt zum Bau eines eigenen **kausalen Sprachmodells** in 
 
 **Das Projekt befindet sich in der Planungs- und Lernphase.** Ordnerstruktur, Leitfaden und erste Platzhalter sind vorhanden. Tokenizer, Modell, Training, Evaluation und Chat-Oberfläche sind noch nicht implementiert. Es gibt daher noch kein trainiertes MintCLM-Modell und keinen funktionierenden Chat oder Trainingsbefehl.
 
+| Bereich | Stand |
+|---|---|
+| Projektstruktur und Lernleitfaden | Vorhanden |
+| Datenaufbereitung und Tokenizer | Geplant |
+| Modell und Training | Geplant |
+| Evaluation und Chat | Geplant |
+
 ## Der Plan
 
 1. Python, NumPy und PyTorch anhand kleiner Übungen kennenlernen.
@@ -44,6 +51,15 @@ Viele Dateien in diesen Ordnern sind noch leer oder Platzhalter. Git speichert k
 ## Entwicklungsumgebung vorbereiten
 
 Du brauchst Python, Git und eine passende PyTorch-Installation. Eine NVIDIA-GPU ist für spätere Trainingsversuche hilfreich, zum Durcharbeiten der Grundlagen aber nicht zwingend nötig.
+
+Falls du das Projekt noch nicht auf deinem Computer hast, kannst du es zuerst herunterladen:
+
+```powershell
+git clone https://github.com/Qytronic/MintCLM.git
+cd MintCLM
+```
+
+Wenn du bereits im Projektordner arbeitest, kannst du diesen Schritt überspringen.
 
 Öffne unter Windows ein Terminal im Projektordner und erstelle eine virtuelle Umgebung:
 
