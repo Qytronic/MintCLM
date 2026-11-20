@@ -24,6 +24,7 @@ dist/
 /artifacts/**/*
 !/artifacts/**/
 !/artifacts/**/.gitkeep
+/Lernbereich/data/processed/
 *.pt
 *.pth
 *.ckpt

@@ -1,0 +1,3 @@
+MintCLM lernt aus Texten.
+Ein Sprachmodell sagt das nächste Token vorher.
+Dieses Beispiel ist noch kein Trainingsdatensatz.

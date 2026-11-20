@@ -34,6 +34,11 @@ Der Leitfaden und die Modellübersicht sind auch als HTML-Dateien im Ordner `doc
 
 ## Projektordner
 
+Der Ordner `Lernbereich/` enthält unsere Übungen und Beispieldaten. Der eigentliche
+MintCLM-Projektcode wird getrennt davon in den bestehenden Ordnern `src/`,
+`scripts/`, `tests/`, `data/` und `artifacts/` entwickelt. Näheres zu den
+Übungen steht in [Lernbereich/README.md](Lernbereich/README.md).
+
 | Ordner | Zweck |
 |---|---|
 | `src/mintclm/` | Geplanter Python-Code für Daten, Tokenizer, Modell, Training und Textgenerierung |
